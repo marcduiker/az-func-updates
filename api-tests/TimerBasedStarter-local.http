@@ -1,0 +1,8 @@
+### use GET to retrieve info about the function:
+GET http://localhost:7071/admin/functions/TimerBasedStarter
+
+### Use POST to trigger the function:
+POST http://localhost:7071/admin/functions/TimerBasedStarter
+Content-Type: application/json
+
+{}

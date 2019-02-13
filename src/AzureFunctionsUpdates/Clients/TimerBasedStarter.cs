@@ -12,7 +12,7 @@ namespace AzureFunctionsUpdates.Clients
             [OrchestrationClient] DurableOrchestrationClient client,
             ILogger logger)
         {
-            await client.StartNewAsync(nameof(RepoUpdateOrchestration), null);
+            await client.StartNewAsync(nameof(ReleaseUpdateOrchestration), null);
         }
     }
 }

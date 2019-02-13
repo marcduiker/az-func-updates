@@ -1,13 +1,12 @@
-﻿using AzureFunctionsUpdates.Models;
-using Microsoft.Azure.Cosmos.Table;
+﻿using Microsoft.WindowsAzure.Storage.Table;
 
-namespace AzureFunctionsUpdates.Repositories
+namespace AzureFunctionsUpdates.Storage
 {
-    public static class RepoReleaseQueryBuilder
+    public static class QueryBuilder<T> where T : TableEntity, new()
     {
-        public static TableQuery<RepoRelease> CreateQueryForPartitionKey(string partitionKey)
+        public static TableQuery<T> CreateQueryForPartitionKey(string partitionKey)
         {
-            return new TableQuery<RepoRelease>()
+            return new TableQuery<T>()
                 .Where(GetFilterConditionWhichEqualsPartitionKey(partitionKey));
         }
 
