@@ -1,9 +1,6 @@
 ﻿using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace AzureFunctionsUpdates.UnitTests.Models
