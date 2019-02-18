@@ -45,23 +45,26 @@ namespace AzureFunctionsUpdates.Orchestrations
 
                 var latestFromGitHub = await Task.WhenAll(getLatestReleaseFromGitHubTasks);
                 var latestFromHistory = await Task.WhenAll(getLatestReleasesFromHistoryTasks);
-               
+
+                var saveAndUpdateTasks = new List<Task>();
                 foreach (var repo in repositories)
                 {
                     var latestReleases = new LatestReleases(repo, latestFromGitHub, latestFromHistory);
                     if (latestReleases.IsNewRelease)
                     {
-                        await context.CallActivityWithRetryAsync(
+                        saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
                             nameof(SaveLatestRelease),
                             GetDefaultRetryOptions(),
-                            latestReleases.FromGitHub);
+                            latestReleases.FromGitHub));
 
-                        await context.CallActivityWithRetryAsync(
+                        saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
                             nameof(PostUpdate),
                             GetDefaultRetryOptions(),
-                            latestReleases.FromGitHub);
+                            latestReleases.FromGitHub));
                     }
                 }
+
+                await Task.WhenAll(saveAndUpdateTasks);
             }
         }
 
