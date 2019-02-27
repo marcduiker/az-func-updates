@@ -12,6 +12,7 @@ namespace AzureFunctionsUpdates.Models
                 default(string),
                 default(DateTimeOffset),
                 default(string),
+                default(string),
                 default(string))
         { } 
     }

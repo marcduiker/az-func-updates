@@ -2,7 +2,6 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using System;
 using AzureFunctionsUpdates.Storage;
 
 namespace AzureFunctionsUpdates.Activities
@@ -16,14 +15,9 @@ namespace AzureFunctionsUpdates.Activities
             [Table(Configuration.Releases.TableName)]ICollector<RepositoryRelease> collector,
             ILogger logger)
         {
-            try
-            {
-                collector.Add(repoRelease);
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Failed to store {repoRelease.RepositoryName} release {repoRelease.ReleaseName}.", e);
-            }
+            logger.LogInformation($"Started {nameof(SaveLatestRelease)} for { repoRelease.RepositoryName} { repoRelease.ReleaseName}.");
+
+            collector.Add(repoRelease);   
         }
     }
 }

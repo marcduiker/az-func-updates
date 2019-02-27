@@ -18,17 +18,12 @@ namespace AzureFunctionsUpdates.Activities
             [Table(Configuration.Releases.TableName)] CloudTable table,
             ILogger logger)
         {
-            RepositoryRelease latestKnownRelease = null;
-            try
-            {
-                var query = QueryBuilder<RepositoryRelease>.CreateQueryForPartitionKey(repoConfiguration.RepositoryName);
-                var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
-                latestKnownRelease = queryResult.Results.AsReadOnly().OrderByDescending(release => release.CreatedAt).FirstOrDefault();
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Failed to retrieve release history for {repoConfiguration.RepositoryOwner}/{repoConfiguration.RepositoryName} from {Configuration.Releases.TableName}.", e);
-            }
+            logger.LogInformation($"Started {nameof(GetLatestReleaseFromHistory)} for { repoConfiguration.RepositoryOwner } { repoConfiguration.RepositoryName }.");
+
+            RepositoryRelease latestKnownRelease = null;            
+            var query = QueryBuilder<RepositoryRelease>.CreateQueryForPartitionKey(repoConfiguration.RepositoryName);
+            var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
+            latestKnownRelease = queryResult.Results.AsReadOnly().OrderByDescending(release => release.CreatedAt).FirstOrDefault();
 
             return latestKnownRelease ?? new NullRelease(repoConfiguration.RepositoryName);
         }

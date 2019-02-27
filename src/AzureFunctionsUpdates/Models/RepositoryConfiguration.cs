@@ -11,19 +11,23 @@ namespace AzureFunctionsUpdates.Models
 
         public RepositoryConfiguration(
             string repositoryOwner,
-            string repositoryName)
+            string repositoryName,
+            string hashTags)
         {
             PartitionKey = Configuration.RepositoryConfigurations.PartitionKey;
             RowKey = $"{repositoryOwner}|{repositoryName}";
 
             RepositoryOwner = repositoryOwner;
             RepositoryName = repositoryName;
+            HashTags = hashTags;
             CreatedAt = DateTime.UtcNow;
         }
 
         public string RepositoryOwner { get; set; }
 
         public string RepositoryName { get; set; }
+
+        public string HashTags { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }
     }

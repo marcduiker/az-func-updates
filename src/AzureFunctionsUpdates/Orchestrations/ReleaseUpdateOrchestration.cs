@@ -16,6 +16,8 @@ namespace AzureFunctionsUpdates.Orchestrations
             [OrchestrationTrigger] DurableOrchestrationContextBase context,
             ILogger logger)
         {
+            logger.LogInformation($"Started {nameof(ReleaseUpdateOrchestration)}.");
+
             // Read repo links from storage table
             var repositories = await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
                 nameof(GetRepositoryConfigurations),
@@ -65,6 +67,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                 }
 
                 await Task.WhenAll(saveAndUpdateTasks);
+                logger.LogInformation($"Completed {nameof(ReleaseUpdateOrchestration)}.");
             }
         }
 

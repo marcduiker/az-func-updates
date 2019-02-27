@@ -15,6 +15,8 @@ namespace AzureFunctionsUpdates.Activities
             [ActivityTrigger] RepositoryConfiguration repoConfiguration,
             ILogger logger)
         {
+            logger.LogInformation($"Started {nameof(GetLatestReleaseFromGitHub)} for { repoConfiguration.RepositoryOwner } { repoConfiguration.RepositoryName }.");
+
             var latestRelease = await Client.Repository.Release.GetLatest(repoConfiguration.RepositoryOwner, repoConfiguration.RepositoryName);
             var repoRelease = MapToRepoRelease(repoConfiguration, latestRelease);
 
@@ -32,7 +34,8 @@ namespace AzureFunctionsUpdates.Activities
                 release.TagName,
                 release.CreatedAt,
                 release.HtmlUrl,
-                release.Body);
+                release.Body,
+                repoConfiguration.HashTags);
         }
     }
 }

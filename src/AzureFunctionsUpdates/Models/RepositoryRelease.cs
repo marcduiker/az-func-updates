@@ -15,7 +15,8 @@ namespace AzureFunctionsUpdates.Models
             string tagName,
             DateTimeOffset createdAt,
             string htmlUrl,
-            string body
+            string body,
+            string hashTags
             )
         {
             PartitionKey = repositoryName;
@@ -28,6 +29,7 @@ namespace AzureFunctionsUpdates.Models
             ReleaseCreatedAt = createdAt;
             HtmlUrl = htmlUrl;
             Body = body;
+            HashTags = hashTags;
             CreatedAt = DateTimeOffset.Now;
         }
 
@@ -44,6 +46,8 @@ namespace AzureFunctionsUpdates.Models
         public string HtmlUrl { get; set; }
 
         public string Body { get; set; }
+
+        public string HashTags { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }
     }
