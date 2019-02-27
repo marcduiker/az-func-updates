@@ -32,13 +32,23 @@ namespace AzureFunctionsUpdates.Activities
 
         private static string CreateMessage(RepositoryRelease release)
         {
-             return $"A new release ({release.ReleaseName}) for {release.RepositoryName} is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}." +
+            string firstLine;
+            if (string.IsNullOrEmpty(release.ReleaseName) || release.ReleaseName == release.TagName)
+            {
+                firstLine = $"A new {release.RepositoryName} release, tagged {release.TagName}, is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
+            }
+            else
+            {
+                firstLine = $"A new {release.RepositoryName} release, {release.ReleaseName} (tagged {release.TagName}), is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
+            }
+
+            return firstLine +
                $"{Environment.NewLine}" +
                $"{Environment.NewLine}" +
                $"See {release.HtmlUrl} for more information." +
                $"{Environment.NewLine}" +
                $"{Environment.NewLine}" +
-               $"{release.HashTags }";
+               $"{release.HashTags}";
         }
     }
 }
