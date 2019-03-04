@@ -21,6 +21,7 @@ namespace AzureFunctionsUpdates.Models
             RepositoryName = repositoryName;
             HashTags = hashTags;
             CreatedAt = DateTime.UtcNow;
+            IsActive = true;
         }
 
         public string RepositoryOwner { get; set; }
@@ -30,5 +31,7 @@ namespace AzureFunctionsUpdates.Models
         public string HashTags { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

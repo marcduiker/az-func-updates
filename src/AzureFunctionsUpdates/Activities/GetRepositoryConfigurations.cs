@@ -4,6 +4,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AzureFunctionsUpdates.Activities
@@ -22,7 +23,8 @@ namespace AzureFunctionsUpdates.Activities
             var repositoryConfigurations = new List<RepositoryConfiguration>();
             var query = QueryBuilder<RepositoryConfiguration>.CreateQueryForPartitionKey(Configuration.RepositoryConfigurations.PartitionKey);
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
-            repositoryConfigurations.AddRange(queryResult);
+            var activeConfigurations = queryResult.Results.Where(config => config.IsActive);
+            repositoryConfigurations.AddRange(activeConfigurations);
             
             return repositoryConfigurations;
         }
