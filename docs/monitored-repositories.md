@@ -5,6 +5,7 @@ These are the GitHub repositories which are monitored by the application.
 |Azure|azure-functions-core-tools|
 |Azure|azure-functions-docker|
 |Azure|azure-functions-durable-extension|
+}Azure|azure-functions-durable-js|
 |Azure|azure-functions-eventgrid-extension|
 |Azure|azure-functions-host|
 |Azure|azure-functions-java-library|
