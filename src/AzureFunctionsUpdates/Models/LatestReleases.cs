@@ -25,7 +25,7 @@ namespace AzureFunctionsUpdates.Models
 
         public RepositoryRelease FromHistory => _latestReleasesFromHistory.First(release => release.RepositoryName.Equals(Repository.RepositoryName, StringComparison.InvariantCultureIgnoreCase));
 
-        public bool IsNewRelease
+        public bool IsNewAndShouldBeStored
         {
             get
             {
@@ -34,8 +34,30 @@ namespace AzureFunctionsUpdates.Models
                     return true;
                 }
 
+                if (FromGitHub.GetType().Equals(typeof(NullRelease)))
+                {
+                    return false;
+                }
+
                 return !(FromGitHub.ReleaseId == FromHistory.ReleaseId);
             }
         }
+
+        public bool IsNewAndShouldBePosted
+        {
+            get
+            {
+                return IsNewAndShouldBeStored && IsWithinTimeWindow();
+
+                bool IsWithinTimeWindow()
+                {
+                    return DateTimeOffset.UtcNow.Subtract(FromGitHub.ReleaseCreatedAt).Days < MaximumNumberOfDaysToPostAboutNewlyFoundRelease;
+                }
+            }
+
+            
+        }
+
+        public const int MaximumNumberOfDaysToPostAboutNewlyFoundRelease = 4;
     }
 }

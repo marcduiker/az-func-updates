@@ -7,15 +7,15 @@ using Tweetinvi.Models;
 
 namespace AzureFunctionsUpdates.Activities
 {
-    public static class PostUpdate
+    public class PostUpdate
     {
-        private static string consumerApiKey = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Key");
-        private static string consumerApiSecret = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Secret");
-        private static string accessToken = Environment.GetEnvironmentVariable("Twitter_Access_Token");
-        private static string accessTokenSecret = Environment.GetEnvironmentVariable("Twitter_Access_Token_Secret");
+        private readonly string consumerApiKey = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Key");
+        private readonly string consumerApiSecret = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Secret");
+        private readonly string accessToken = Environment.GetEnvironmentVariable("Twitter_Access_Token");
+        private readonly string accessTokenSecret = Environment.GetEnvironmentVariable("Twitter_Access_Token_Secret");
 
         [FunctionName(nameof(PostUpdate))]
-        public static void Run(
+        public void Run(
             [ActivityTrigger] RepositoryRelease newRelease,
             ILogger logger)
         {

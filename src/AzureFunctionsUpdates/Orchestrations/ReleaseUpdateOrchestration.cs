@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace AzureFunctionsUpdates.Orchestrations
 {
-    public static class ReleaseUpdateOrchestration
+    public class ReleaseUpdateOrchestration
     {
         [FunctionName(nameof(ReleaseUpdateOrchestration))]
-        public static async Task Run(
+        public async Task Run(
             [OrchestrationTrigger] DurableOrchestrationContextBase context,
             ILogger logger)
         {
@@ -20,7 +20,7 @@ namespace AzureFunctionsUpdates.Orchestrations
 
             // Read repo links from storage table
             var repositories = await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                nameof(GetRepositoryConfigurations),
+                nameof(GetConfigurations),
                 GetDefaultRetryOptions(),
                 null);
 
@@ -52,7 +52,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                 foreach (var repo in repositories)
                 {
                     var latestReleases = new LatestReleases(repo, latestFromGitHub, latestFromHistory);
-                    if (latestReleases.IsNewRelease)
+                    if (latestReleases.IsNewAndShouldBeStored)
                     {
                         saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
                             nameof(SaveLatestRelease),

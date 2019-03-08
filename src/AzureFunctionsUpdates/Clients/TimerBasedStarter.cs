@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace AzureFunctionsUpdates.Clients
 {
-    public static class TimerBasedStarter
+    public class TimerBasedStarter
     {
         [FunctionName(nameof(TimerBasedStarter))]
-        public static async Task Run([TimerTrigger("0 0 */1 * * *")]TimerInfo timer,
+        public async Task Run([TimerTrigger("0 0 */1 * * *")]TimerInfo timer,
             [OrchestrationClient] DurableOrchestrationClient client,
             ILogger logger)
         {

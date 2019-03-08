@@ -11,8 +11,14 @@
        
         public class RepositoryConfigurations
         {
-            public const string TableName = "RepositoryConfigurations";
+            public const string TableName = "AzFuncUpdatesConfigurations";
             public const string PartitionKey = "Repositories";
+        }
+
+        public class PublicationConfigurations
+        {
+            public const string TableName = "AzFuncUpdatesConfigurations";
+            public const string PartitionKey = "Publication";
         }
     }
 }
