@@ -1,6 +1,7 @@
 ﻿using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
 using FluentAssertions;
+using System;
 using Xunit;
 
 namespace AzureFunctionsUpdates.UnitTests.Models
@@ -8,7 +9,7 @@ namespace AzureFunctionsUpdates.UnitTests.Models
     public class LatestReleasesTests
     {
         [Fact]
-        public void GivenHistoryReleaseIsNullRelease_WhenIsNewReleaseIsCalled_ThenIsNewReleaseShouldBeTrue()
+        public void GivenHistoryReleaseIsNullRelease_WhenIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeTrue()
         {
             // Arrange
             const string repoName = "repo";
@@ -20,11 +21,11 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
 
             // Assert
-            latestReleases.IsNewRelease.Should().BeTrue("because no release was found in history data.");
+            latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because no release was found in history data.");
         }
 
         [Fact]
-        public void GivenHistoryReleaseIsReleaseWithMatchingReleaseId_WhenIsNewReleaseIsCalled_ThenIsNewReleaseShouldBeFalse()
+        public void GivenHistoryReleaseIsReleaseWithMatchingReleaseId_WhenIIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeFalse()
         {
             // Arrange
             const string repoName = "repo";
@@ -37,11 +38,11 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
 
             // Assert
-            latestReleases.IsNewRelease.Should().BeFalse("because the releaseIds are equal");
+            latestReleases.IsNewAndShouldBeStored.Should().BeFalse("because the releaseIds are equal");
         }
 
         [Fact]
-        public void GivenHistoryReleaseIsReleaseWithNonMatchingReleaseId_WhenIsNewReleaseIsCalled_ThenIsNewReleaseShouldBeTrue()
+        public void GivenHistoryReleaseIsReleaseWithNonMatchingReleaseId_WhenIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeTrue()
         {
             // Arrange
             const string repoName = "repo";
@@ -55,7 +56,47 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
 
             // Assert
-            latestReleases.IsNewRelease.Should().BeTrue("because the releaseIds are not equal");
+            latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because the releaseIds are not equal");
+        }
+
+        [Fact]
+        public void GivenHistoryReleaseIsNullReleaseAndGitHubReleaseIsWithinTimeWindow_WhenIsNewAndShouldBePostedIsCalled_ThenResultShouldBeTrue()
+        {
+            // Arrange
+            const string repoName = "repo";
+            const int releaseIdGithub = 1;
+            var daysTimespan = new TimeSpan(2, 0, 0, 0);
+            var gitHubReleaseDate = DateTimeOffset.UtcNow.Subtract(daysTimespan);
+            var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
+            var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseIdAndDate(repoName, releaseIdGithub, gitHubReleaseDate);
+            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
+
+            // Act
+            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+
+            // Assert
+            latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because the release is not in history yet.");
+            latestReleases.IsNewAndShouldBePosted.Should().BeTrue($"because the release date is within the time window of {LatestReleases.MaximumNumberOfDaysToPostAboutNewlyFoundRelease} days");
+        }
+
+        [Fact]
+        public void GivenHistoryReleaseIsNullReleaseAndGitHubReleaseIsOutsideTimeWindow_WhenIsNewAndShouldBePostedIsCalled_ThenResultShouldBeFalse()
+        {
+            // Arrange
+            const string repoName = "repo";
+            const int releaseIdGithub = 1;
+            var daysTimespan = new TimeSpan(5, 0, 0, 0);
+            var gitHubReleaseDate = DateTimeOffset.UtcNow.Subtract(daysTimespan);
+            var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
+            var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseIdAndDate(repoName, releaseIdGithub, gitHubReleaseDate);
+            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
+
+            // Act
+            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+
+            // Assert
+            latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because the release is not in history yet.");
+            latestReleases.IsNewAndShouldBePosted.Should().BeFalse($"because the release date is outside the time window of {LatestReleases.MaximumNumberOfDaysToPostAboutNewlyFoundRelease} days");
         }
     }
 }

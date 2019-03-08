@@ -18,7 +18,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetRepositoryConfigurations),
+                        nameof(GetConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -70,6 +70,70 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             return mockContext;
         }
 
+        public static Mock<DurableOrchestrationContextBase> BuildWithoutHistoryAndGitHubReturnsNullRelease()
+        {
+            const string repository1Name = "repo-1";
+            const string repository2Name = "repo-2";
+            var mockContext = new Mock<DurableOrchestrationContextBase>();
+            var repoConfigurations = RepositoryConfigurationBuilder.BuildTwo(repository1Name, repository2Name);
+
+            // Setup GetRepositoryConfigurations
+            mockContext
+                .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
+                        nameof(GetConfigurations),
+                        It.IsAny<RetryOptions>(),
+                        null))
+                .ReturnsAsync(repoConfigurations);
+
+            // Setup GetLatestReleaseFromGitHub
+            mockContext
+                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                        nameof(GetLatestReleaseFromGitHub),
+                        It.IsAny<RetryOptions>(),
+                        repoConfigurations[0]))
+                 .ReturnsAsync(RepositoryReleaseBuilder.BuildOne(repository1Name));
+
+
+            // Returns NullRelease because no release info is retrieved from GitHub
+            mockContext
+                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                        nameof(GetLatestReleaseFromGitHub),
+                        It.IsAny<RetryOptions>(),
+                        repoConfigurations[1]))
+                 .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease(repository1Name));
+
+            // Setup GetLatestReleaseFromHistory
+            mockContext
+                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                        nameof(GetLatestReleaseFromHistory),
+                        It.IsAny<RetryOptions>(),
+                        repoConfigurations[0]))
+                .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease(repository1Name));
+
+            mockContext
+               .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                       nameof(GetLatestReleaseFromHistory),
+                       It.IsAny<RetryOptions>(),
+                       repoConfigurations[1]))
+               .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease(repository2Name));
+
+            // Setup SaveLatestRelease
+            mockContext
+                .Setup(c => c.CallActivityWithRetryAsync(
+                        nameof(SaveLatestRelease),
+                        It.IsAny<RetryOptions>(),
+                        It.IsAny<RepositoryRelease>()));
+
+            // Setup PostUpdate
+            mockContext
+                .Setup(c => c.CallActivityWithRetryAsync(
+                        nameof(PostUpdate),
+                        It.IsAny<RetryOptions>(),
+                        It.IsAny<RepositoryRelease>()));
+
+            return mockContext;
+        }
+
         public static Mock<DurableOrchestrationContextBase> BuildWithHistoryAndWithGitHubWithEqualReleases()
         {
             const string repository1Name = "repo-1";
@@ -82,7 +146,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetRepositoryConfigurations),
+                        nameof(GetConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -148,7 +212,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetRepositoryConfigurations),
+                        nameof(GetConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);

@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using AzureFunctionsUpdates.Models;
+using System;
 using System.Collections.Generic;
 
 namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
@@ -23,6 +24,15 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                 .Create();
         }
 
+        public static RepositoryRelease BuildOneWithReleaseIdAndDate(string repositoryName, int id, DateTimeOffset releaseDate)
+        {
+            return _fixture.Build<RepositoryRelease>()
+                .With(r => r.RepositoryName, repositoryName)
+                .With(r => r.ReleaseId, id)
+                .With(r => r.ReleaseCreatedAt, releaseDate)
+                .Create();
+        }
+
         public static RepositoryRelease BuildNullRelease(string repositoryName)
         {
             return new NullRelease(repositoryName);
@@ -33,6 +43,14 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             return new List<RepositoryRelease>
             {
                 BuildOneWithReleaseId(repositoryName, id)
+            };
+        }
+
+        public static IReadOnlyList<RepositoryRelease> BuildListContainingOneWithReleaseIdAndDate(string repositoryName, int id, DateTimeOffset releaseDate)
+        {
+            return new List<RepositoryRelease>
+            {
+                BuildOneWithReleaseIdAndDate(repositoryName, id, releaseDate)
             };
         }
 

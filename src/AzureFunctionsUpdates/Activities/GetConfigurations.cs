@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace AzureFunctionsUpdates.Activities
 {
-    public static class GetRepositoryConfigurations
+    public class GetConfigurations
     {
-        [FunctionName(nameof(GetRepositoryConfigurations))]
+        [FunctionName(nameof(GetConfigurations))]
         [StorageAccount(Configuration.ConnectionName)]
-        public static async Task<IReadOnlyList<RepositoryConfiguration>> Run(
+        public async Task<IReadOnlyList<RepositoryConfiguration>> Run(
             [ActivityTrigger] string unusedInput,
             [Table(Configuration.RepositoryConfigurations.TableName)] CloudTable table,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetRepositoryConfigurations)}.");
+            logger.LogInformation($"Started {nameof(GetConfigurations)}.");
 
             var repositoryConfigurations = new List<RepositoryConfiguration>();
             var query = QueryBuilder<RepositoryConfiguration>.CreateQueryForPartitionKey(Configuration.RepositoryConfigurations.PartitionKey);

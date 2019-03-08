@@ -6,11 +6,11 @@ using AzureFunctionsUpdates.Storage;
 
 namespace AzureFunctionsUpdates.Activities
 {
-    public static class SaveLatestRelease
+    public class SaveLatestRelease
     {
         [FunctionName(nameof(SaveLatestRelease))]
         [StorageAccount(Configuration.ConnectionName)]
-        public static async Task Run(
+        public async Task Run(
             [ActivityTrigger] RepositoryRelease repoRelease,
             [Table(Configuration.Releases.TableName)]ICollector<RepositoryRelease> collector,
             ILogger logger)
