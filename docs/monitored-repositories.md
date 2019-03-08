@@ -1,6 +1,6 @@
-These are the GitHug repositories which are monitored by the application.
+These are the GitHub repositories which are monitored by the application.
 
-| Owner | Repository |
+| Owner | Repository name |
 |-|-|
 |Azure|azure-functions-core-tools|
 |Azure|azure-functions-docker|
