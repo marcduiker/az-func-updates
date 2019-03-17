@@ -9,7 +9,8 @@
                 publicationDate: default,
                 title: default,
                 description: default,
-                url: default
+                url: default,
+                hashTags: default
                 )
         {}
     }

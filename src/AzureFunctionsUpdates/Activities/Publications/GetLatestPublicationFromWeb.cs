@@ -45,7 +45,8 @@ namespace AzureFunctionsUpdates.Activities.Publications
                 publicationDate: atomEntry.Published,
                 title: atomEntry.Title,
                 description: atomEntry.Description,
-                url: atomEntry.Links.FirstOrDefault()?.Uri.AbsolutePath);
+                url: atomEntry.Links.FirstOrDefault()?.Uri.AbsolutePath,
+                hashTags: configuration.HashTags);
         }
     }
 }

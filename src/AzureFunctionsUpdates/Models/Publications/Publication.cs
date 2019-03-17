@@ -14,7 +14,8 @@ namespace AzureFunctionsUpdates.Models.Publications
             DateTimeOffset publicationDate,
             string title,
             string description,
-            string url)
+            string url,
+            string hashTags)
         {
             PublicationSourceName = publicationSourceName;
             Id = id;
@@ -22,6 +23,7 @@ namespace AzureFunctionsUpdates.Models.Publications
             Title = title;
             Description = description;
             Url = url;
+            HashTags = hashTags;
         }
 
         public string PublicationSourceName { get; set; }
@@ -36,6 +38,6 @@ namespace AzureFunctionsUpdates.Models.Publications
 
         public string Url { get; set; }
 
-        
+        public string HashTags { get; set; }
     }
 }
