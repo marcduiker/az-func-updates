@@ -59,10 +59,13 @@ namespace AzureFunctionsUpdates.Orchestrations
                             GetDefaultRetryOptions(),
                             latestReleases.FromGitHub));
 
-                        saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
-                            nameof(PostUpdate),
-                            GetDefaultRetryOptions(),
-                            latestReleases.FromGitHub));
+                        if (Toggles.DoPostUpdate)
+                        {
+                            saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
+                                  nameof(PostUpdate),
+                                  GetDefaultRetryOptions(),
+                                  latestReleases.FromGitHub));
+                        }
                     }
                 }
 

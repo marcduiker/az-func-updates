@@ -42,6 +42,22 @@ namespace AzureFunctionsUpdates.UnitTests.Models
         }
 
         [Fact]
+        public void GivenHistoryReleaseIsNullReleaseAndGitHubReleaseIsNullRelease_WhenIIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeFalse()
+        {
+            // Arrange
+            const string repoName = "repo";
+            var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
+            var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
+            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
+
+            // Act
+            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+
+            // Assert
+            latestReleases.IsNewAndShouldBeStored.Should().BeFalse("because there is no result from GitHub");
+        }
+
+        [Fact]
         public void GivenHistoryReleaseIsReleaseWithNonMatchingReleaseId_WhenIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeTrue()
         {
             // Arrange

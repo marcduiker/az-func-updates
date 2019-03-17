@@ -29,14 +29,14 @@ namespace AzureFunctionsUpdates.Models
         {
             get
             {
-                if (FromHistory.GetType().Equals(typeof(NullRelease)))
-                {
-                    return true;
-                }
-
                 if (FromGitHub.GetType().Equals(typeof(NullRelease)))
                 {
                     return false;
+                }
+
+                if (FromHistory.GetType().Equals(typeof(NullRelease)))
+                {
+                    return true;
                 }
 
                 return !(FromGitHub.ReleaseId == FromHistory.ReleaseId);
