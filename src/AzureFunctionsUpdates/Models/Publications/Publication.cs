@@ -1,25 +1,30 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.Publications
 {
-    public class Publication
+    public class Publication : TableEntity
     {
         public Publication()
         {}
 
         public Publication(
+            string publicationSourceName,
             string id,
             DateTimeOffset publicationDate,
             string title,
             string description,
             string url)
         {
+            PublicationSourceName = publicationSourceName;
             Id = id;
             PublicationDate = publicationDate;
             Title = title;
             Description = description;
             Url = url;
         }
+
+        public string PublicationSourceName { get; set; }
 
         public string Id { get; set; }
 

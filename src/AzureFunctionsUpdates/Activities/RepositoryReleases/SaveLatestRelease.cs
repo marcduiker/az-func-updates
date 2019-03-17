@@ -1,10 +1,10 @@
-﻿using AzureFunctionsUpdates.Models;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Storage;
+using AzureFunctionsUpdates.Models.Releases;
 
-namespace AzureFunctionsUpdates.Activities
+namespace AzureFunctionsUpdates.Activities.Releases
 {
     public class SaveLatestRelease
     {
@@ -12,12 +12,12 @@ namespace AzureFunctionsUpdates.Activities
         [StorageAccount(Configuration.ConnectionName)]
         public async Task Run(
             [ActivityTrigger] RepositoryRelease repoRelease,
-            [Table(Configuration.Releases.TableName)]ICollector<RepositoryRelease> collector,
+            [Table(Configuration.Releases.TableName)]IAsyncCollector<RepositoryRelease> collector,
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(SaveLatestRelease)} for { repoRelease.RepositoryName} { repoRelease.ReleaseName}.");
 
-            collector.Add(repoRelease);   
+            await collector.AddAsync(repoRelease);   
         }
     }
 }

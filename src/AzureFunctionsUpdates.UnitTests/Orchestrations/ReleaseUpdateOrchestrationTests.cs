@@ -1,8 +1,5 @@
-﻿using AzureFunctionsUpdates.Activities;
-using AzureFunctionsUpdates.Models;
-using AzureFunctionsUpdates.Orchestrations;
+﻿using AzureFunctionsUpdates.Orchestrations;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Threading.Tasks;

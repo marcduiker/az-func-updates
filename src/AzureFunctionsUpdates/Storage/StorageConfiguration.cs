@@ -8,7 +8,12 @@
         {
             public const string TableName = "Releases";
         }
-       
+
+        public class Publications
+        {
+            public const string TableName = "Publications";
+        }
+
         public class RepositoryConfigurations
         {
             public const string TableName = "AzFuncUpdatesConfigurations";
@@ -18,7 +23,7 @@
         public class PublicationConfigurations
         {
             public const string TableName = "AzFuncUpdatesConfigurations";
-            public const string PartitionKey = "Publication";
+            public const string PartitionKey = "Publications";
         }
     }
 }

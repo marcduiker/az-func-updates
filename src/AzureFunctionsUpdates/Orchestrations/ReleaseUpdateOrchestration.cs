@@ -1,5 +1,8 @@
 ﻿using AzureFunctionsUpdates.Activities;
+using AzureFunctionsUpdates.Activities.Releases;
 using AzureFunctionsUpdates.Models;
+using AzureFunctionsUpdates.Models.Releases;
+using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,12 +20,12 @@ namespace AzureFunctionsUpdates.Orchestrations
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(ReleaseUpdateOrchestration)}.");
-
+            
             // Read repo links from storage table
             var repositories = await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                nameof(GetConfigurations),
-                GetDefaultRetryOptions(),
-                null);
+                functionName: nameof(GetRepositoryConfigurations),
+                retryOptions: GetDefaultRetryOptions(),
+                input: null);
 
             if (repositories.Any())
             {

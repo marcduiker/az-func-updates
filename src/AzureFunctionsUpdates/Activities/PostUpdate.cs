@@ -1,4 +1,5 @@
 ﻿using AzureFunctionsUpdates.Models;
+using AzureFunctionsUpdates.Models.Releases;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;

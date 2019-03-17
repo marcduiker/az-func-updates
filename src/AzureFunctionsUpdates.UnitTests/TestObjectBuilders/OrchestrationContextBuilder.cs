@@ -5,6 +5,8 @@ using Moq;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using AzureFunctionsUpdates.Models.Releases;
+using AzureFunctionsUpdates.Activities.Releases;
 
 namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 {
@@ -23,7 +25,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -104,7 +106,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -175,7 +177,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -230,7 +232,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);

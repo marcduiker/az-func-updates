@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.Releases
 {
     public class NullRelease : RepositoryRelease
     {

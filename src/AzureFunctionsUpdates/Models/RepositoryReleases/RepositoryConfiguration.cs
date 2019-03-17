@@ -2,9 +2,9 @@
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.Releases
 {
-    public class RepositoryConfiguration : TableEntity
+    public class RepositoryConfiguration : BaseConfiguration
     {
         public RepositoryConfiguration()
         {}
@@ -27,11 +27,5 @@ namespace AzureFunctionsUpdates.Models
         public string RepositoryOwner { get; set; }
 
         public string RepositoryName { get; set; }
-
-        public string HashTags { get; set; }
-
-        public DateTimeOffset CreatedAt { get; set; }
-
-        public bool IsActive { get; set; }
     }
 }
