@@ -20,7 +20,7 @@ namespace AzureFunctionsUpdates.Activities.Publications
 
             Publication publication = new NullPublication(publicationConfiguration.PublicationSourceName);
 
-            using (var xmlReader = XmlReader.Create(publicationConfiguration.PublicationUrl, new XmlReaderSettings() { Async = true }))
+            using (var xmlReader = XmlReader.Create(publicationConfiguration.PublicationSourceUrl, new XmlReaderSettings() { Async = true }))
             {
                 var reader = new AtomFeedReader(xmlReader);
                 while (await reader.Read())

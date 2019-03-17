@@ -18,7 +18,7 @@ namespace AzureFunctionsUpdates.Models.Publications
 
             PublicationSourceOwner = publicationSourceOwner;
             PublicationSourceName = publicationSourceName;
-            PublicationUrl = publicationUrl;
+            PublicationSourceUrl = publicationUrl;
             HashTags = hashTags;
             IsActive = true;
         }
@@ -27,6 +27,6 @@ namespace AzureFunctionsUpdates.Models.Publications
 
         public string PublicationSourceName { get; set; }
 
-        public string PublicationUrl { get; set; }
+        public string PublicationSourceUrl { get; set; }
     }
 }
