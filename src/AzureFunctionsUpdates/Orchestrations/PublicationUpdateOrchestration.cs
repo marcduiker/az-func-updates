@@ -1,5 +1,6 @@
 ﻿using AzureFunctionsUpdates.Activities;
 using AzureFunctionsUpdates.Activities.Publications;
+using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Models.Publications;
 using AzureFunctionsUpdates.Storage;
@@ -64,10 +65,11 @@ namespace AzureFunctionsUpdates.Orchestrations
 
                         if (Toggles.DoPostUpdate)
                         {
+                            var message = MessageBuilder.BuildForPublication(latestPublications.FromWeb);
                             saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
-                                  latestPublications.FromWeb));
+                                  message));
                         }
                     }
                 }

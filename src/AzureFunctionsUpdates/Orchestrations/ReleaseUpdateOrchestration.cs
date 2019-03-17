@@ -1,5 +1,6 @@
 ﻿using AzureFunctionsUpdates.Activities;
 using AzureFunctionsUpdates.Activities.Releases;
+using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Models.Releases;
 using AzureFunctionsUpdates.Storage;
@@ -64,10 +65,11 @@ namespace AzureFunctionsUpdates.Orchestrations
 
                         if (Toggles.DoPostUpdate)
                         {
+                            var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
                             saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
-                                  latestReleases.FromGitHub));
+                                  message));
                         }
                     }
                 }
