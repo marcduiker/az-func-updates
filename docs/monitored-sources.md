@@ -1,4 +1,6 @@
-These are the GitHub repositories which are monitored by the application.
+# These are sources being monitored
+
+## GitHub Repositories
 
 | Owner | Repository name |
 |-|-|
@@ -19,3 +21,9 @@ These are the GitHub repositories which are monitored by the application.
 |Azure|azure-functions-vs-build-sdk|
 |Azure|azure-webjobs-sdk|
 |Azure|azure-webjobs-sdk-extensions|
+|marcduiker|az-func-updates|
+
+## RSS Feeds
+| Owner | Feed |
+|-|-|
+|Azure|[Azure Service Updates](https://azurecomcdn.azureedge.net/en-us/updates/feed/?product=functions)|
