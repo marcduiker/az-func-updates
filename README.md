@@ -8,7 +8,7 @@ Currently this bot checks for:
 - New releases in Azure Functions related GitHub repositories.
 - New posts in the Azure Service Updates RSS feed.
 
-You can read all about how the creation of this application [here](https://blog.marcduiker.nl/2019/03/03/creating-azure-functions-updates-twitterbot.html).
+You can read all about the creation of this application [here](https://blog.marcduiker.nl/2019/03/03/creating-azure-functions-updates-twitterbot.html).
 
 ## Other docs
 
