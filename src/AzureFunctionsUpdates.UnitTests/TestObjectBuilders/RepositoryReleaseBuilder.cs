@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using AzureFunctionsUpdates.Models;
+using AzureFunctionsUpdates.Models.Releases;
 using System;
 using System.Collections.Generic;
 
@@ -13,6 +13,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
         {
             return _fixture.Build<RepositoryRelease>()
                 .With(r => r.RepositoryName, repositoryName)
+                .With(r => r.ReleaseCreatedAt, DateTimeOffset.Now)
                 .Create();
         }
 
@@ -20,6 +21,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
         {
             return _fixture.Build<RepositoryRelease>()
                 .With(r => r.RepositoryName, repositoryName)
+                .With(r => r.ReleaseCreatedAt, DateTimeOffset.Now)
                 .With(r => r.ReleaseId, id)
                 .Create();
         }

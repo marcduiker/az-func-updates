@@ -1,7 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 using System;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.Releases
 {
     public class RepositoryRelease : TableEntity
     {

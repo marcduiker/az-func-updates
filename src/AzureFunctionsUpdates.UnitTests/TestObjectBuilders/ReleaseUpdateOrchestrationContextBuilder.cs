@@ -5,10 +5,12 @@ using Moq;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using AzureFunctionsUpdates.Models.Releases;
+using AzureFunctionsUpdates.Activities.Releases;
 
 namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 {
-    public static class OrchestrationContextBuilder
+    public static class ReleaseUpdateOrchestrationContextBuilder
     {
         public static Mock<DurableOrchestrationContextBase> BuildWithoutHistoryAndWithGitHubRelease()
         {
@@ -23,7 +25,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -78,14 +80,14 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                 .Setup(c => c.CallActivityWithRetryAsync(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
-                        It.Is<RepositoryRelease>(r => r.RepositoryName.Equals(repository1Name))))
+                        It.Is<UpdateMessage>(message => message.Topic.Contains(repository1Name))))
                 .Returns(Task.CompletedTask);
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
-                        It.Is<RepositoryRelease>(r => r.RepositoryName.Equals(repository2Name))))
+                        It.Is<UpdateMessage>(message => message.Topic.Contains(repository2Name))))
                 .Returns(Task.CompletedTask);
 
             return mockContext;
@@ -104,7 +106,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -154,7 +156,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                 .Setup(c => c.CallActivityWithRetryAsync(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
-                        It.Is<RepositoryRelease>(r => r.RepositoryName.Equals(repository1Name))))
+                        It.Is<UpdateMessage>(message => message.Topic.Contains(repository1Name))))
                 .Returns(Task.CompletedTask);
 
             return mockContext;
@@ -175,7 +177,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -230,7 +232,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetRepositoryConfigurations
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                        nameof(GetConfigurations),
+                        nameof(GetRepositoryConfigurations),
                         It.IsAny<RetryOptions>(),
                         null))
                 .ReturnsAsync(repoConfigurations);
@@ -278,7 +280,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                 .Setup(c => c.CallActivityWithRetryAsync(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
-                        It.Is<RepositoryRelease>(r => r.RepositoryName.Equals(repository2Name))))
+                        It.Is<UpdateMessage>(message => message.Topic.Contains(repository2Name))))
                 .Returns(Task.CompletedTask);
 
             return mockContext;

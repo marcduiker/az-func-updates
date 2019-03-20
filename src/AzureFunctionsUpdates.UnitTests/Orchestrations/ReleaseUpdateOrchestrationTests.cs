@@ -1,10 +1,9 @@
-﻿using AzureFunctionsUpdates.Activities;
-using AzureFunctionsUpdates.Models;
+﻿using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Orchestrations;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,7 +15,8 @@ namespace AzureFunctionsUpdates.UnitTests.Orchestrations
         public async Task GivenNoReleasesAreAvailableInHistoryAndNewGithubReleasesAreRetrieved_WhenOrchestrationIsRunForTwoRepos_ThenSaveAndPostShouldBeCalled()
         {
             // Arrange
-            var mockContext = OrchestrationContextBuilder.BuildWithoutHistoryAndWithGitHubRelease();
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithoutHistoryAndWithGitHubRelease();
             var logger = new Mock<ILogger>();
             var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 
@@ -31,7 +31,8 @@ namespace AzureFunctionsUpdates.UnitTests.Orchestrations
         public async Task GivenNoReleasesAreAvailableInHistoryAndNewGithubReleaseReturnsNullRelease_WhenOrchestrationIsRunForTwoRepos_ThenSaveAndPostShouldBeCalledForTheReleaseWhichWasReturnedFromGitHub()
         {
             // Arrange
-            var mockContext = OrchestrationContextBuilder.BuildWithoutHistoryAndGitHubReturnsNullRelease();
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithoutHistoryAndGitHubReturnsNullRelease();
             var logger = new Mock<ILogger>();
             var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 
@@ -47,7 +48,7 @@ namespace AzureFunctionsUpdates.UnitTests.Orchestrations
         public async Task GivenReleasesAreAvailableInHistoryAndNewGithubReleasesAreTheSame_WhenOrchestrationIsRun_ThenSaveAndPostShouldNotBeCalled()
         {
             // Arrange
-            var mockContext = OrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithEqualReleases();
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithEqualReleases();
             var logger = new Mock<ILogger>();
             var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 
@@ -62,7 +63,8 @@ namespace AzureFunctionsUpdates.UnitTests.Orchestrations
         public async Task GivenReleasesAreAvailableInHistoryAndOneGithubReleaseIsEqualAndOneIsDifferent_WhenOrchestrationIsRun_ThenSaveAndPostShouldBeCalledOnce()
         {
             // Arrange
-            var mockContext = OrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithOneEqualAndOneDifferentRelease();
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithOneEqualAndOneDifferentRelease();
             var logger = new Mock<ILogger>();
             var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 

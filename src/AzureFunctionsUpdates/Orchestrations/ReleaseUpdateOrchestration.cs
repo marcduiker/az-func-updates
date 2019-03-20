@@ -1,5 +1,9 @@
 ﻿using AzureFunctionsUpdates.Activities;
+using AzureFunctionsUpdates.Activities.Releases;
+using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models;
+using AzureFunctionsUpdates.Models.Releases;
+using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,12 +21,12 @@ namespace AzureFunctionsUpdates.Orchestrations
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(ReleaseUpdateOrchestration)}.");
-
+            
             // Read repo links from storage table
             var repositories = await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                nameof(GetConfigurations),
-                GetDefaultRetryOptions(),
-                null);
+                functionName: nameof(GetRepositoryConfigurations),
+                retryOptions: GetDefaultRetryOptions(),
+                input: null);
 
             if (repositories.Any())
             {
@@ -59,12 +63,13 @@ namespace AzureFunctionsUpdates.Orchestrations
                             GetDefaultRetryOptions(),
                             latestReleases.FromGitHub));
 
-                        if (Toggles.DoPostUpdate)
+                        if (Toggles.DoPostUpdate && latestReleases.IsNewAndShouldBePosted)
                         {
+                            var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
                             saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
-                                  latestReleases.FromGitHub));
+                                  message));
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-﻿using AzureFunctionsUpdates.Models;
+﻿using AzureFunctionsUpdates.Models.Releases;
 using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -7,26 +7,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AzureFunctionsUpdates.Activities
+namespace AzureFunctionsUpdates.Activities.Releases
 {
-    public class GetConfigurations
+    public class GetRepositoryConfigurations
     {
-        [FunctionName(nameof(GetConfigurations))]
+        [FunctionName(nameof(GetRepositoryConfigurations))]
         [StorageAccount(Configuration.ConnectionName)]
         public async Task<IReadOnlyList<RepositoryConfiguration>> Run(
             [ActivityTrigger] string unusedInput,
             [Table(Configuration.RepositoryConfigurations.TableName)] CloudTable table,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetConfigurations)}.");
+            logger.LogInformation($"Started {nameof(GetRepositoryConfigurations)}.");
 
-            var repositoryConfigurations = new List<RepositoryConfiguration>();
-            var query = QueryBuilder<RepositoryConfiguration>.CreateQueryForPartitionKey(Configuration.RepositoryConfigurations.PartitionKey);
+            var configurations = new List<RepositoryConfiguration>();
+            var query = QueryBuilder<RepositoryConfiguration>.CreateQueryForPartitionKey(
+                Configuration.RepositoryConfigurations.PartitionKey);
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
             var activeConfigurations = queryResult.Results.Where(config => config.IsActive);
-            repositoryConfigurations.AddRange(activeConfigurations);
+            configurations.AddRange(activeConfigurations);
             
-            return repositoryConfigurations;
+            return configurations;
         }
     }
 }

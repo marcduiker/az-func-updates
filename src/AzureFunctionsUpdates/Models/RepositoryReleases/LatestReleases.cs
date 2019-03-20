@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.Releases
 {
     public class LatestReleases
     {

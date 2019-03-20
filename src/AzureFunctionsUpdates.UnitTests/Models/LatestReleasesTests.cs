@@ -1,4 +1,5 @@
 ﻿using AzureFunctionsUpdates.Models;
+using AzureFunctionsUpdates.Models.Releases;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
 using FluentAssertions;
 using System;

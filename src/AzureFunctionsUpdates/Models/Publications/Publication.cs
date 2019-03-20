@@ -1,25 +1,34 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.Publications
 {
-    public class Publication
+    public class Publication : TableEntity
     {
         public Publication()
         {}
 
         public Publication(
+            string publicationSourceName,
             string id,
             DateTimeOffset publicationDate,
             string title,
             string description,
-            string url)
+            string url,
+            string hashTags)
         {
+            PartitionKey = publicationSourceName;
+            PublicationSourceName = publicationSourceName;
+            RowKey = id;
             Id = id;
             PublicationDate = publicationDate;
             Title = title;
             Description = description;
             Url = url;
+            HashTags = hashTags;
         }
+
+        public string PublicationSourceName { get; set; }
 
         public string Id { get; set; }
 
@@ -31,6 +40,6 @@ namespace AzureFunctionsUpdates.Models
 
         public string Url { get; set; }
 
-        
+        public string HashTags { get; set; }
     }
 }

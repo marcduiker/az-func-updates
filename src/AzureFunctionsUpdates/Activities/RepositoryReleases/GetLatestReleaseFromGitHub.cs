@@ -1,10 +1,10 @@
-﻿using AzureFunctionsUpdates.Models;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Octokit;
+using AzureFunctionsUpdates.Models.Releases;
 
-namespace AzureFunctionsUpdates.Activities
+namespace AzureFunctionsUpdates.Activities.Releases
 {
     public class GetLatestReleaseFromGitHub
     {
