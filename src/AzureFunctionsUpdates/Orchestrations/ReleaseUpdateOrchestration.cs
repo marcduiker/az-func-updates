@@ -63,7 +63,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                             GetDefaultRetryOptions(),
                             latestReleases.FromGitHub));
 
-                        if (Toggles.DoPostUpdate)
+                        if (Toggles.DoPostUpdate && latestReleases.IsNewAndShouldBePosted)
                         {
                             var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
                             saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(

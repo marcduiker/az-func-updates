@@ -3,6 +3,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
+using Microsoft.SyndicationFeed.Rss;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -22,13 +23,14 @@ namespace AzureFunctionsUpdates.Activities.Publications
 
             using (var xmlReader = XmlReader.Create(publicationConfiguration.PublicationSourceUrl, new XmlReaderSettings() { Async = true }))
             {
-                var reader = new AtomFeedReader(xmlReader);
+                var parser = new RssParser();
+                var reader = new RssFeedReader(xmlReader, parser);
                 while (await reader.Read())
                 {
                     if (reader.ElementType == SyndicationElementType.Item)
                     {
-                        IAtomEntry entry = await reader.ReadEntry();
-                        publication = MapToPublication(publicationConfiguration, entry);
+                        ISyndicationItem item = await reader.ReadItem();
+                        publication = MapToPublication(publicationConfiguration, item);
                         break;
                     }
                 }
@@ -37,15 +39,15 @@ namespace AzureFunctionsUpdates.Activities.Publications
             return publication;
         }
 
-        private static Publication MapToPublication(PublicationConfiguration configuration, IAtomEntry atomEntry)
+        private static Publication MapToPublication(PublicationConfiguration configuration, ISyndicationItem item)
         {
             return new Publication(
                 publicationSourceName: configuration.PublicationSourceName,
-                id: atomEntry.Id,
-                publicationDate: atomEntry.Published,
-                title: atomEntry.Title,
-                description: atomEntry.Description,
-                url: atomEntry.Links.FirstOrDefault()?.Uri.AbsolutePath,
+                id: item.Id,
+                publicationDate: item.Published,
+                title: item.Title,
+                description: item.Description,
+                url: item.Links.FirstOrDefault()?.Uri.AbsoluteUri,
                 hashTags: configuration.HashTags);
         }
     }

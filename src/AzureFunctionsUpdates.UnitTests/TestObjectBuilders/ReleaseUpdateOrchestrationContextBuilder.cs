@@ -10,7 +10,7 @@ using AzureFunctionsUpdates.Activities.Releases;
 
 namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 {
-    public static class OrchestrationContextBuilder
+    public static class ReleaseUpdateOrchestrationContextBuilder
     {
         public static Mock<DurableOrchestrationContextBase> BuildWithoutHistoryAndWithGitHubRelease()
         {

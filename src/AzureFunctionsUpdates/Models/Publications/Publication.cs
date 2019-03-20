@@ -17,7 +17,9 @@ namespace AzureFunctionsUpdates.Models.Publications
             string url,
             string hashTags)
         {
+            PartitionKey = publicationSourceName;
             PublicationSourceName = publicationSourceName;
+            RowKey = id;
             Id = id;
             PublicationDate = publicationDate;
             Title = title;

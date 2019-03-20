@@ -37,7 +37,7 @@ namespace AzureFunctionsUpdates.Builders
             var content = $"A new {publication.PublicationSourceName} post titled '{publication.Title}' has been published on {publication.PublicationDate.ToString("D")}." +
                 $"{Environment.NewLine}" +
                $"{Environment.NewLine}" +
-               $"See {publication.Url} to read the full post." +
+               $"See {publication.Url} to read the full announcement." +
                $"{Environment.NewLine}" +
                $"{Environment.NewLine}" +
                $"{publication.HashTags}";

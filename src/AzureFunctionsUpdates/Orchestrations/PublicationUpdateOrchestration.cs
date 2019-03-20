@@ -63,7 +63,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                             GetDefaultRetryOptions(),
                             latestPublications.FromWeb));
 
-                        if (Toggles.DoPostUpdate)
+                        if (Toggles.DoPostUpdate && latestPublications.IsNewAndShouldBePosted)
                         {
                             var message = MessageBuilder.BuildForPublication(latestPublications.FromWeb);
                             saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
