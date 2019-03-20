@@ -6,7 +6,7 @@ This repository contains the code for the [Azure Functions Updates Twitterbot](h
 
 Currently this bot checks for:
 - New releases in Azure Functions related GitHub repositories.
-- New posts in the Azure Service Updates RSS feed.
+- New posts, related to Azure Functions, in the Azure Service Updates RSS feed.
 
 You can read all about the creation of this application [here](https://blog.marcduiker.nl/2019/03/03/creating-azure-functions-updates-twitterbot.html).
 
