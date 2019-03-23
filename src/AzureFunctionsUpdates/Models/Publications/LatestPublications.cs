@@ -6,40 +6,41 @@ namespace AzureFunctionsUpdates.Models.Publications
 {
     public class LatestPublications
     {
-        private IReadOnlyList<Publication> _latestPublicationsFromWeb;
-        private IReadOnlyList<Publication> _latestPublicationsFromHistory;
+        private readonly IReadOnlyList<Publication> _latestPublicationsFromWeb;
+        private readonly IReadOnlyList<Publication> _latestPublicationsFromHistory;
+        private readonly PublicationConfiguration _publicationConfiguration;
 
         public LatestPublications(
             PublicationConfiguration publicationConfiguration,
             IReadOnlyList<Publication> latestReleasesFromGitHub,
             IReadOnlyList<Publication> latestReleasesFromHistory)
         {
-            PublicationConfiguration = publicationConfiguration;
+            this._publicationConfiguration = publicationConfiguration;
             _latestPublicationsFromWeb = latestReleasesFromGitHub;
             _latestPublicationsFromHistory = latestReleasesFromHistory;
         }
 
-        public PublicationConfiguration PublicationConfiguration { get; set; }
+        
 
-        public Publication FromWeb => _latestPublicationsFromWeb.First(publication => publication.PublicationSourceName.Equals(PublicationConfiguration.PublicationSourceName, StringComparison.InvariantCultureIgnoreCase));
+        public Publication FromWeb => _latestPublicationsFromWeb.First(publication => publication.PublicationSourceName.Equals(_publicationConfiguration.PublicationSourceName, StringComparison.InvariantCultureIgnoreCase));
 
-        public Publication FromHistory => _latestPublicationsFromHistory.First(publication => publication.PublicationSourceName.Equals(PublicationConfiguration.PublicationSourceName, StringComparison.InvariantCultureIgnoreCase));
+        public Publication FromHistory => _latestPublicationsFromHistory.First(publication => publication.PublicationSourceName.Equals(_publicationConfiguration.PublicationSourceName, StringComparison.InvariantCultureIgnoreCase));
 
         public bool IsNewAndShouldBeStored
         {
             get
             {
-                if (FromWeb.GetType().Equals(typeof(NullPublication)))
+                if (FromWeb.GetType() == typeof(NullPublication))
                 {
                     return false;
                 }
 
-                if (FromHistory.GetType().Equals(typeof(NullPublication)))
+                if (FromHistory.GetType() == typeof(NullPublication))
                 {
                     return true;
                 }
 
-                return !(FromWeb.Id == FromHistory.Id);
+                return FromWeb.Id != FromHistory.Id;
             }
         }
 
@@ -58,6 +59,6 @@ namespace AzureFunctionsUpdates.Models.Publications
             
         }
 
-        public const int MaximumNumberOfDaysToPostAboutNewlyFoundPublication = 4;
+        public const int MaximumNumberOfDaysToPostAboutNewlyFoundPublication = 2;
     }
 }

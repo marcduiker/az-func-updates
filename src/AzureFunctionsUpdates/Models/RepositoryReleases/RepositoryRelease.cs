@@ -1,7 +1,7 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-using System;
+﻿using System;
+using Microsoft.WindowsAzure.Storage.Table;
 
-namespace AzureFunctionsUpdates.Models.Releases
+namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
     public class RepositoryRelease : TableEntity
     {
@@ -20,7 +20,7 @@ namespace AzureFunctionsUpdates.Models.Releases
             )
         {
             PartitionKey = repositoryName;
-            RowKey = releaseId.ToString();
+            RowKey = $"{releaseId.ToString()}-{tagName}";
 
             ReleaseId = releaseId;
             RepositoryName = repositoryName;

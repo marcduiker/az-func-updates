@@ -14,7 +14,7 @@ namespace AzureFunctionsUpdates.UnitTests.Orchestrations
     public class PublicationUpdateOrchestrationTests
     {
         [Fact]
-        public async Task GivenHistoryIsEmptyAndNewPublicationIsAvailable_WhenOrchcestrationIsRun_ThenSaveAndUpdateShouldBeCalled()
+        public async Task GivenHistoryIsEmptyAndNewPublicationIsAvailable_WhenOrchestrationIsRun_ThenSaveAndUpdateShouldBeCalled()
         {
             // Arrange
             Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");

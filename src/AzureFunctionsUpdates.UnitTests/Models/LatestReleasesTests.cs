@@ -1,8 +1,8 @@
 ﻿using AzureFunctionsUpdates.Models;
-using AzureFunctionsUpdates.Models.Releases;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
 using FluentAssertions;
 using System;
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 using Xunit;
 
 namespace AzureFunctionsUpdates.UnitTests.Models
@@ -26,7 +26,7 @@ namespace AzureFunctionsUpdates.UnitTests.Models
         }
 
         [Fact]
-        public void GivenHistoryReleaseIsReleaseWithMatchingReleaseId_WhenIIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeFalse()
+        public void GivenHistoryReleaseIsReleaseWithMatchingReleaseId_WhenIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeFalse()
         {
             // Arrange
             const string repoName = "repo";
@@ -43,7 +43,7 @@ namespace AzureFunctionsUpdates.UnitTests.Models
         }
 
         [Fact]
-        public void GivenHistoryReleaseIsNullReleaseAndGitHubReleaseIsNullRelease_WhenIIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeFalse()
+        public void GivenHistoryReleaseIsNullReleaseAndGitHubReleaseIsNullRelease_WhenIsNewAndShouldBeStoredIsCalled_ThenResultShouldBeFalse()
         {
             // Arrange
             const string repoName = "repo";
@@ -82,7 +82,7 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             // Arrange
             const string repoName = "repo";
             const int releaseIdGithub = 1;
-            var daysTimespan = new TimeSpan(2, 0, 0, 0);
+            var daysTimespan = new TimeSpan(1, 0, 0, 0);
             var gitHubReleaseDate = DateTimeOffset.UtcNow.Subtract(daysTimespan);
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseIdAndDate(repoName, releaseIdGithub, gitHubReleaseDate);

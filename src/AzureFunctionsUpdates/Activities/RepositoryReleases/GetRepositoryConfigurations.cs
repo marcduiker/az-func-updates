@@ -1,13 +1,13 @@
-﻿using AzureFunctionsUpdates.Models.Releases;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace AzureFunctionsUpdates.Activities.Releases
+namespace AzureFunctionsUpdates.Activities.RepositoryReleases
 {
     public class GetRepositoryConfigurations
     {

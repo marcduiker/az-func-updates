@@ -1,0 +1,16 @@
+@appName = 
+@functionAppUrl = https://{{appName}}.azurewebsites.net 
+@code = 
+@taskHub = AzFuncUpdatesV130
+
+GET {{functionAppUrl}}/runtime/webhooks/durableTask/instances
+    ?taskHub={{taskHub}}
+    &code={{code}}
+    &runtimeStatus=Failed
+    &showInput=true
+    &top=50
+
+### Purge failed instances
+DELETE {{functionAppUrl}}/runtime/webhooks/durabletask/instances
+    ?taskHub={{taskHub}}
+    &code={{code}}

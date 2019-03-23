@@ -2,44 +2,43 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AzureFunctionsUpdates.Models.Releases
+namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
     public class LatestReleases
     {
-        private IReadOnlyList<RepositoryRelease> _latestReleasesFromGitHub;
-        private IReadOnlyList<RepositoryRelease> _latestReleasesFromHistory;
-
+        private readonly IReadOnlyList<RepositoryRelease> _latestReleasesFromGitHub;
+        private readonly IReadOnlyList<RepositoryRelease> _latestReleasesFromHistory;
+        private readonly RepositoryConfiguration _repository;
+        
         public LatestReleases(
             RepositoryConfiguration repository,
             IReadOnlyList<RepositoryRelease> latestReleasesFromGitHub,
             IReadOnlyList<RepositoryRelease> latestReleasesFromHistory)
         {
-            Repository = repository;
+            _repository = repository;
             _latestReleasesFromGitHub = latestReleasesFromGitHub;
             _latestReleasesFromHistory = latestReleasesFromHistory;
         }
 
-        public RepositoryConfiguration Repository { get; set; }
+        public RepositoryRelease FromGitHub => _latestReleasesFromGitHub.First(release => release.RepositoryName.Equals(_repository.RepositoryName, StringComparison.InvariantCultureIgnoreCase));
 
-        public RepositoryRelease FromGitHub => _latestReleasesFromGitHub.First(release => release.RepositoryName.Equals(Repository.RepositoryName, StringComparison.InvariantCultureIgnoreCase));
-
-        public RepositoryRelease FromHistory => _latestReleasesFromHistory.First(release => release.RepositoryName.Equals(Repository.RepositoryName, StringComparison.InvariantCultureIgnoreCase));
+        public RepositoryRelease FromHistory => _latestReleasesFromHistory.First(release => release.RepositoryName.Equals(_repository.RepositoryName, StringComparison.InvariantCultureIgnoreCase));
 
         public bool IsNewAndShouldBeStored
         {
             get
             {
-                if (FromGitHub.GetType().Equals(typeof(NullRelease)))
+                if (FromGitHub.GetType() == typeof(NullRelease))
                 {
                     return false;
                 }
 
-                if (FromHistory.GetType().Equals(typeof(NullRelease)))
+                if (FromHistory.GetType() == typeof(NullRelease))
                 {
                     return true;
                 }
 
-                return !(FromGitHub.ReleaseId == FromHistory.ReleaseId);
+                return FromGitHub.ReleaseId != FromHistory.ReleaseId;
             }
         }
 
@@ -58,6 +57,6 @@ namespace AzureFunctionsUpdates.Models.Releases
             
         }
 
-        public const int MaximumNumberOfDaysToPostAboutNewlyFoundRelease = 4;
+        public const int MaximumNumberOfDaysToPostAboutNewlyFoundRelease = 2;
     }
 }

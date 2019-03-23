@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
-using AzureFunctionsUpdates.Models.Releases;
 using System;
 using System.Collections.Generic;
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 
 namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 {

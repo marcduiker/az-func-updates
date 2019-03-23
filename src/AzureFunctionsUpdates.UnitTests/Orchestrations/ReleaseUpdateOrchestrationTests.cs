@@ -74,5 +74,21 @@ namespace AzureFunctionsUpdates.UnitTests.Orchestrations
             // Assert
             mockContext.VerifyAll();
         }
+        
+        [Fact]
+        public async Task GivenReleasesAreAvailableInHistoryAndOneGithubReleasesDifferent_WhenOrchestrationIsRunAndSaveLatestReleaseFails_ThenPostUpdateShouldNotBeCalled()
+        {
+            // Arrange
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithDifferentReleasesButFailsOnSaveLatestRelease();
+            var logger = new Mock<ILogger>();
+            var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
+
+            // Act
+            await releaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
+
+            // Assert
+            mockContext.VerifyAll();
+        }
     }
 }
