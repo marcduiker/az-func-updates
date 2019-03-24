@@ -19,7 +19,7 @@ namespace AzureFunctionsUpdates.Models.Publications
         {
             PartitionKey = publicationSourceName;
             PublicationSourceName = publicationSourceName;
-            RowKey = id;
+            RowKey = $"{id}-{publicationDate}";
             Id = id;
             PublicationDate = publicationDate;
             Title = title;

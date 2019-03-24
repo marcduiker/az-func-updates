@@ -38,11 +38,11 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                 .ReturnsAsync(PublicationBuilder.BuildPublicationFromWeb(publicationSourceName));
 
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync(
+                .Setup(c => c.CallActivityWithRetryAsync<bool>(
                     nameof(SaveLatestPublication),
                     It.IsAny<RetryOptions>(),
                     It.IsAny<Publication>()))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(true);
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync(

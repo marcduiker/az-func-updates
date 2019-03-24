@@ -1,8 +1,7 @@
-﻿using AzureFunctionsUpdates.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
-using System;
+﻿using System;
+using AzureFunctionsUpdates.Storage;
 
-namespace AzureFunctionsUpdates.Models.Releases
+namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
     public class RepositoryConfiguration : BaseConfiguration
     {

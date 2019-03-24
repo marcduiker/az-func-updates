@@ -1,12 +1,12 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 using AzureFunctionsUpdates.Storage;
-using System.Linq;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
-using AzureFunctionsUpdates.Models.Releases;
 
-namespace AzureFunctionsUpdates.Activities.Releases
+namespace AzureFunctionsUpdates.Activities.RepositoryReleases
 {
     public class GetLatestReleaseFromHistory
     {

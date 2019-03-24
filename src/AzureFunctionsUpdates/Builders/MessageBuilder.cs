@@ -1,7 +1,7 @@
 ﻿using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Models.Publications;
-using AzureFunctionsUpdates.Models.Releases;
 using System;
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 
 namespace AzureFunctionsUpdates.Builders
 {

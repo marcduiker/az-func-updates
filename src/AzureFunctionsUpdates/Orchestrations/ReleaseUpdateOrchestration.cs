@@ -1,15 +1,14 @@
 ﻿using AzureFunctionsUpdates.Activities;
-using AzureFunctionsUpdates.Activities.Releases;
 using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models;
-using AzureFunctionsUpdates.Models.Releases;
-using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AzureFunctionsUpdates.Activities.RepositoryReleases;
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 
 namespace AzureFunctionsUpdates.Orchestrations
 {
@@ -52,29 +51,27 @@ namespace AzureFunctionsUpdates.Orchestrations
                 var latestFromGitHub = await Task.WhenAll(getLatestReleaseFromGitHubTasks);
                 var latestFromHistory = await Task.WhenAll(getLatestReleasesFromHistoryTasks);
 
-                var saveAndUpdateTasks = new List<Task>();
                 foreach (var repo in repositories)
                 {
                     var latestReleases = new LatestReleases(repo, latestFromGitHub, latestFromHistory);
                     if (latestReleases.IsNewAndShouldBeStored)
                     {
-                        saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
+                        var isSaveSuccessful = await context.CallActivityWithRetryAsync<bool>(
                             nameof(SaveLatestRelease),
                             GetDefaultRetryOptions(),
-                            latestReleases.FromGitHub));
+                            latestReleases.FromGitHub);
 
-                        if (Toggles.DoPostUpdate && latestReleases.IsNewAndShouldBePosted)
+                        if (isSaveSuccessful && Toggles.DoPostUpdate && latestReleases.IsNewAndShouldBePosted)
                         {
                             var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
-                            saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
+                            await context.CallActivityWithRetryAsync(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
-                                  message));
+                                  message);
                         }
                     }
                 }
 
-                await Task.WhenAll(saveAndUpdateTasks);
                 logger.LogInformation($"Completed {nameof(ReleaseUpdateOrchestration)}.");
             }
         }

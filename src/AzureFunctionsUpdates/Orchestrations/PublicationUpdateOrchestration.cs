@@ -51,30 +51,29 @@ namespace AzureFunctionsUpdates.Orchestrations
 
                 var latestFromWeb = await Task.WhenAll(getLatestPublicationsFromWebTasks);
                 var latestFromHistory = await Task.WhenAll(getLatestPublicationsFromHistoryTasks);
-
-                var saveAndUpdateTasks = new List<Task>();
+                
                 foreach (var publicationConfiguration in publicationConfigurations)
                 {
                     var latestPublications = new LatestPublications(publicationConfiguration, latestFromWeb, latestFromHistory);
                     if (latestPublications.IsNewAndShouldBeStored)
                     {
-                        saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
+                        var isSaveSuccessful = await context.CallActivityWithRetryAsync<bool>(
                             nameof(SaveLatestPublication),
                             GetDefaultRetryOptions(),
-                            latestPublications.FromWeb));
+                            latestPublications.FromWeb);
 
-                        if (Toggles.DoPostUpdate && latestPublications.IsNewAndShouldBePosted)
+                        if (isSaveSuccessful && Toggles.DoPostUpdate && latestPublications.IsNewAndShouldBePosted)
                         {
                             var message = MessageBuilder.BuildForPublication(latestPublications.FromWeb);
-                            saveAndUpdateTasks.Add(context.CallActivityWithRetryAsync(
+                            await context.CallActivityWithRetryAsync(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
-                                  message));
+                                  message);
                         }
                     }
                 }
 
-                await Task.WhenAll(saveAndUpdateTasks);
+                
                 logger.LogInformation($"Completed {nameof(PublicationUpdateOrchestration)}.");
             }
         }
