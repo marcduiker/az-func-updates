@@ -23,10 +23,9 @@ namespace AzureFunctionsUpdates.Activities
 
             var creds = new TwitterCredentials(consumerApiKey, consumerApiSecret, accessToken, accessTokenSecret);
             
-            var tweet = Auth.ExecuteOperationWithCredentials(creds, () =>
-            {
-                return Tweet.PublishTweet(message.Content);
-            });
+            var tweet = Auth.ExecuteOperationWithCredentials(creds, () => Tweet.PublishTweet(message.Content));
+            
+            logger.LogInformation($"Finished {nameof(PostUpdate)} with tweet: {tweet.Url}.");
         }
     }
 }

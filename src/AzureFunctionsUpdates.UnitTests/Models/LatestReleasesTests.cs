@@ -1,7 +1,7 @@
-﻿using AzureFunctionsUpdates.Models;
-using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
+﻿using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
 using FluentAssertions;
 using System;
+using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
 using Xunit;
 
@@ -17,9 +17,14 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseId(repoName, 1);
             var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
-
+            var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
+            
             // Act
-            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+            var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
+                repoConfig, 
+                releasesFromGitHub, 
+                releasesFromHistory,
+                releaseMatchFunction);
 
             // Assert
             latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because no release was found in history data.");
@@ -34,9 +39,14 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseId(repoName, releaseId);
             var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseId(repoName, releaseId);
-
+            var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
+            
             // Act
-            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+            var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
+                repoConfig, 
+                releasesFromGitHub, 
+                releasesFromHistory,
+                releaseMatchFunction);
 
             // Assert
             latestReleases.IsNewAndShouldBeStored.Should().BeFalse("because the releaseIds are equal");
@@ -50,9 +60,14 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
             var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
-
+            var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
+            
             // Act
-            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+            var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
+                repoConfig,
+                releasesFromGitHub, 
+                releasesFromHistory,
+                releaseMatchFunction);
 
             // Assert
             latestReleases.IsNewAndShouldBeStored.Should().BeFalse("because there is no result from GitHub");
@@ -68,9 +83,14 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseId(repoName, releaseIdGithub);
             var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseId(repoName, releaseIdHistory);
+            var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
 
             // Act
-            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+            var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
+                repoConfig, 
+                releasesFromGitHub, 
+                releasesFromHistory,
+                releaseMatchFunction);
 
             // Assert
             latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because the releaseIds are not equal");
@@ -87,9 +107,14 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseIdAndDate(repoName, releaseIdGithub, gitHubReleaseDate);
             var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
+            var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
 
             // Act
-            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+            var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
+                repoConfig, 
+                releasesFromGitHub,
+                releasesFromHistory,
+                releaseMatchFunction);
 
             // Assert
             latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because the release is not in history yet.");
@@ -107,9 +132,14 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseIdAndDate(repoName, releaseIdGithub, gitHubReleaseDate);
             var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease(repoName);
+            var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
 
             // Act
-            var latestReleases = new LatestReleases(repoConfig, releasesFromGitHub, releasesFromHistory);
+            var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
+                repoConfig, 
+                releasesFromGitHub, 
+                releasesFromHistory,
+                releaseMatchFunction);
 
             // Assert
             latestReleases.IsNewAndShouldBeStored.Should().BeTrue("because the release is not in history yet.");

@@ -1,5 +1,6 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 using System;
+using AzureFunctionsUpdates.Storage;
 
 namespace AzureFunctionsUpdates.Models.Publications
 {
@@ -17,9 +18,9 @@ namespace AzureFunctionsUpdates.Models.Publications
             string url,
             string hashTags)
         {
-            PartitionKey = publicationSourceName;
+            PartitionKey = KeyFormatter.SanitizeKey(publicationSourceName);
             PublicationSourceName = publicationSourceName;
-            RowKey = $"{id}-{publicationDate}";
+            RowKey = KeyFormatter.SanitizeKey($"{id}-{publicationDate.ToUnixTimeSeconds()}");
             Id = id;
             PublicationDate = publicationDate;
             Title = title;

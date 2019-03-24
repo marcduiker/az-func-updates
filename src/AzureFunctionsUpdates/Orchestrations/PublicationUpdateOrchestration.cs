@@ -51,12 +51,23 @@ namespace AzureFunctionsUpdates.Orchestrations
 
                 var latestFromWeb = await Task.WhenAll(getLatestPublicationsFromWebTasks);
                 var latestFromHistory = await Task.WhenAll(getLatestPublicationsFromHistoryTasks);
+                var publicationMatchFunction = PublicationFunctionBuilder.BuildForMatchingPublicationSource();
                 
                 foreach (var publicationConfiguration in publicationConfigurations)
                 {
-                    var latestPublications = new LatestPublications(publicationConfiguration, latestFromWeb, latestFromHistory);
+                    var latestPublications = LatestObjectsBuilder.Build<PublicationConfiguration, Publication, LatestPublications>(
+                        publicationConfiguration,
+                        latestFromWeb, 
+                        latestFromHistory,
+                        publicationMatchFunction);
+                    
+                    logger.LogInformation($"Publication: {publicationConfiguration.PublicationSourceName} " +
+                                $"ID: {latestPublications.FromWeb.Id}," +
+                                $"IsNewAndShouldBeStored: {latestPublications.IsNewAndShouldBeStored}, " +
+                                $"IsNewAndShouldBePosted: {latestPublications.IsNewAndShouldBePosted}.");
+                    
                     if (latestPublications.IsNewAndShouldBeStored)
-                    {
+                    {   
                         var isSaveSuccessful = await context.CallActivityWithRetryAsync<bool>(
                             nameof(SaveLatestPublication),
                             GetDefaultRetryOptions(),
