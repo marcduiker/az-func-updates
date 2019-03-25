@@ -6,23 +6,20 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
     public class LatestReleases
     {
-        private readonly IReadOnlyList<RepositoryRelease> _latestReleasesFromGitHub;
-        private readonly IReadOnlyList<RepositoryRelease> _latestReleasesFromHistory;
-        private readonly RepositoryConfiguration _repository;
+        public LatestReleases()
+        {}
         
         public LatestReleases(
-            RepositoryConfiguration repository,
-            IReadOnlyList<RepositoryRelease> latestReleasesFromGitHub,
-            IReadOnlyList<RepositoryRelease> latestReleasesFromHistory)
+            RepositoryRelease latestReleaseFromGitHub,
+            RepositoryRelease latestReleaseFromHistory)
         {
-            _repository = repository;
-            _latestReleasesFromGitHub = latestReleasesFromGitHub;
-            _latestReleasesFromHistory = latestReleasesFromHistory;
+            FromGitHub = latestReleaseFromGitHub;
+            FromHistory = latestReleaseFromHistory;
         }
 
-        public RepositoryRelease FromGitHub => _latestReleasesFromGitHub.First(release => release.RepositoryName.Equals(_repository.RepositoryName, StringComparison.InvariantCultureIgnoreCase));
+        public RepositoryRelease FromGitHub { get; }
 
-        public RepositoryRelease FromHistory => _latestReleasesFromHistory.First(release => release.RepositoryName.Equals(_repository.RepositoryName, StringComparison.InvariantCultureIgnoreCase));
+        public RepositoryRelease FromHistory { get; }
 
         public bool IsNewAndShouldBeStored
         {
@@ -53,8 +50,6 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
                     return DateTimeOffset.UtcNow.Subtract(FromGitHub.ReleaseCreatedAt).Days < MaximumNumberOfDaysToPostAboutNewlyFoundRelease;
                 }
             }
-
-            
         }
 
         public const int MaximumNumberOfDaysToPostAboutNewlyFoundRelease = 2;

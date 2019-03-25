@@ -1,4 +1,5 @@
 ﻿using System;
+using AzureFunctionsUpdates.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureFunctionsUpdates.Models.RepositoryReleases
@@ -19,8 +20,8 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
             string hashTags
             )
         {
-            PartitionKey = repositoryName;
-            RowKey = $"{releaseId.ToString()}-{tagName}";
+            PartitionKey = KeyFormatter.SanitizeKey(repositoryName);
+            RowKey = KeyFormatter.SanitizeKey($"{releaseId.ToString()}-{tagName}");
 
             ReleaseId = releaseId;
             RepositoryName = repositoryName;

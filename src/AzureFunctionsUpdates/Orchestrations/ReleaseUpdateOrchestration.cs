@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Activities.RepositoryReleases;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
+using AzureFunctionsUpdates.Storage;
 
 namespace AzureFunctionsUpdates.Orchestrations
 {
@@ -22,38 +23,48 @@ namespace AzureFunctionsUpdates.Orchestrations
             logger.LogInformation($"Started {nameof(ReleaseUpdateOrchestration)}.");
             
             // Read repo links from storage table
-            var repositories = await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
+            var repositoryConfigurations = await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
                 functionName: nameof(GetRepositoryConfigurations),
                 retryOptions: GetDefaultRetryOptions(),
                 input: null);
 
-            if (repositories.Any())
+            if (repositoryConfigurations.Any())
             {
                 var getLatestReleaseFromGitHubTasks = new List<Task<RepositoryRelease>>();
                 var getLatestReleasesFromHistoryTasks = new List<Task<RepositoryRelease>>();
 
                 // Fan out over the repos
-                foreach (var repo in repositories)
+                foreach (var repositoryConfiguration in repositoryConfigurations)
                 {
                     // Get most recent release from GitHub
                     getLatestReleaseFromGitHubTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHub),
                         GetDefaultRetryOptions(),
-                        repo));
+                        repositoryConfiguration));
 
                     // Get most recent known releases from history
                     getLatestReleasesFromHistoryTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
                     nameof(GetLatestReleaseFromHistory),
                     GetDefaultRetryOptions(),
-                    repo));   
+                    repositoryConfiguration));   
                 }
 
                 var latestFromGitHub = await Task.WhenAll(getLatestReleaseFromGitHubTasks);
                 var latestFromHistory = await Task.WhenAll(getLatestReleasesFromHistoryTasks);
-
-                foreach (var repo in repositories)
+                var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
+                
+                foreach (var repositoryConfiguration in repositoryConfigurations)
                 {
-                    var latestReleases = new LatestReleases(repo, latestFromGitHub, latestFromHistory);
+                    var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
+                        repositoryConfiguration,
+                        latestFromGitHub,
+                        latestFromHistory,
+                        releaseMatchFunction);
+                    logger.LogInformation($"Repository: {repositoryConfiguration.RepositoryName} " +
+                                          $"Tag: {latestReleases.FromGitHub.TagName}," +
+                                          $"IsNewAndShouldBeStored: {latestReleases.IsNewAndShouldBeStored}, " +
+                                          $"IsNewAndShouldBePosted: {latestReleases.IsNewAndShouldBePosted}.");
+                    
                     if (latestReleases.IsNewAndShouldBeStored)
                     {
                         var isSaveSuccessful = await context.CallActivityWithRetryAsync<bool>(
