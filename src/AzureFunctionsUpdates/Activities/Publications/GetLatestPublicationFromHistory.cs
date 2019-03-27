@@ -24,6 +24,13 @@ namespace AzureFunctionsUpdates.Activities.Publications
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
             latestKnownPublication = queryResult.Results.AsReadOnly().OrderByDescending(publication => publication.PublicationDate).FirstOrDefault();
 
+            if (latestKnownPublication != null)
+            {
+                logger.LogInformation($"Found publication in history for configuration: {publicationConfiguration.PublicationSourceName}, " +
+                                      $"ID: {latestKnownPublication.Id}," +
+                                      $"PublicationDate: {latestKnownPublication.PublicationDate:F}.");
+            }
+            
             return latestKnownPublication ?? new NullPublication(publicationConfiguration.PublicationSourceName);
         }
     }

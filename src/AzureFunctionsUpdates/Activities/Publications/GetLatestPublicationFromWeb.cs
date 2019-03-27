@@ -35,6 +35,10 @@ namespace AzureFunctionsUpdates.Activities.Publications
                     }
                 }
             }
+            
+            logger.LogInformation($"Found publication on web for {publicationConfiguration.PublicationSourceName}: " +
+                                  $"ID: {publication.Id}," +
+                                  $"Date: {publication.PublicationDate:F}.");
         
             return publication;
         }
