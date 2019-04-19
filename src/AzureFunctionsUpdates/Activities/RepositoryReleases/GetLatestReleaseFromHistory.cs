@@ -19,11 +19,18 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
         {
             logger.LogInformation($"Started {nameof(GetLatestReleaseFromHistory)} for { repoConfiguration.RepositoryOwner } { repoConfiguration.RepositoryName }.");
 
-            RepositoryRelease latestKnownRelease = null;            
+            RepositoryRelease latestKnownRelease = null;
             var query = QueryBuilder<RepositoryRelease>.CreateQueryForPartitionKey(repoConfiguration.RepositoryName);
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
             latestKnownRelease = queryResult.Results.AsReadOnly().OrderByDescending(release => release.CreatedAt).FirstOrDefault();
-
+            
+            if (latestKnownRelease != null)
+            {
+                logger.LogInformation($"Found release in history for configuration: {repoConfiguration.RepositoryName}, " +
+                                      $"Release ID: {latestKnownRelease.ReleaseId}," +
+                                      $"ReleaseCreatedAt: {latestKnownRelease.ReleaseCreatedAt:F}.");
+            }
+            
             return latestKnownRelease ?? new NullRelease(repoConfiguration.RepositoryName);
         }
     }

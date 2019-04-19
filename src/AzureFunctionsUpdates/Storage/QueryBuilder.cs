@@ -6,8 +6,9 @@ namespace AzureFunctionsUpdates.Storage
     {
         public static TableQuery<T> CreateQueryForPartitionKey(string partitionKey)
         {
+            var sanitizedPartitionKey = KeyFormatter.SanitizeKey(partitionKey);
             return new TableQuery<T>()
-                .Where(GetFilterConditionWhichEqualsPartitionKey(partitionKey));
+                .Where(GetFilterConditionWhichEqualsPartitionKey(sanitizedPartitionKey));
         }
 
         private static string GetFilterConditionWhichEqualsPartitionKey(string partitionKey)
