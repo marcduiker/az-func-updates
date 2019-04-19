@@ -14,12 +14,12 @@ namespace AzureFunctionsUpdates.Activities.Publications
         [StorageAccount(Configuration.ConnectionName)]
         public async Task<Publication> Run(
             [ActivityTrigger] PublicationConfiguration publicationConfiguration,
-            [Table(Configuration.Releases.TableName)] CloudTable table,
+            [Table(Configuration.Publications.TableName)] CloudTable table,
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(GetLatestPublicationFromHistory)} for { publicationConfiguration.PublicationSourceOwner } { publicationConfiguration.PublicationSourceName }.");
 
-            Publication latestKnownPublication = null;            
+            Publication latestKnownPublication = null;
             var query = QueryBuilder<Publication>.CreateQueryForPartitionKey(publicationConfiguration.PublicationSourceName);
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
             latestKnownPublication = queryResult.Results.AsReadOnly().OrderByDescending(publication => publication.PublicationDate).FirstOrDefault();
