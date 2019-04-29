@@ -12,11 +12,13 @@ namespace AzureFunctionsUpdates.Builders
             string firstLine;
             if (string.IsNullOrEmpty(release.ReleaseName) || release.ReleaseName == release.TagName)
             {
-                firstLine = $"A new {release.RepositoryName} release, tagged {release.TagName}, is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
+                firstLine = $"A new {release.RepositoryName} release, tagged {release.TagName}, " +
+                    $"is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
             }
             else
             {
-                firstLine = $"A new {release.RepositoryName} release, {release.ReleaseName} (tagged {release.TagName}), is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
+                firstLine = $"A new {release.RepositoryName} release, {release.ReleaseName} (tagged {release.TagName}), " +
+                    $"is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
             }
 
             var topic = $"{nameof(RepositoryRelease)}|{release.RepositoryName}";

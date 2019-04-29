@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -15,13 +16,18 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             [ActivityTrigger] RepositoryConfiguration repoConfiguration,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetLatestReleaseFromGitHub)} for { repoConfiguration.RepositoryOwner } { repoConfiguration.RepositoryName }.");
+            logger.LogInformation($"Started {nameof(GetLatestReleaseFromGitHub)} for " +
+                $"{ repoConfiguration.RepositoryOwner } " +
+                $"{ repoConfiguration.RepositoryName }.");
 
             RepositoryRelease repoRelease = new NullRelease(repoConfiguration.RepositoryName);
             try
             {
-                var latestRelease = await client.Repository.Release.GetLatest(repoConfiguration.RepositoryOwner, repoConfiguration.RepositoryName);
-                repoRelease = MapToRepoRelease(repoConfiguration, latestRelease);
+                var latestRelease = await client.Repository.Release.GetAll(
+                    repoConfiguration.RepositoryOwner,
+                    repoConfiguration.RepositoryName,
+                    new ApiOptions { PageCount = 1, PageSize = 1 });
+                repoRelease = MapToRepoRelease(repoConfiguration, latestRelease.FirstOrDefault());
             }
             catch (NotFoundException)
             {

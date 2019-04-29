@@ -47,7 +47,8 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
 
                 bool IsWithinTimeWindow()
                 {
-                    return DateTimeOffset.UtcNow.Subtract(FromGitHub.ReleaseCreatedAt).Days < MaximumNumberOfDaysToPostAboutNewlyFoundRelease;
+                    return DateTimeOffset.UtcNow.Subtract(FromGitHub.ReleaseCreatedAt).Days 
+                        < MaximumNumberOfDaysToPostAboutNewlyFoundRelease;
                 }
             }
         }
