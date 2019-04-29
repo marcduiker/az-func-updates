@@ -17,7 +17,9 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             [Table(Configuration.Releases.TableName)] CloudTable table,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetLatestReleaseFromHistory)} for { repoConfiguration.RepositoryOwner } { repoConfiguration.RepositoryName }.");
+            logger.LogInformation($"Started {nameof(GetLatestReleaseFromHistory)} for " +
+                $"{ repoConfiguration.RepositoryOwner } " +
+                $"{ repoConfiguration.RepositoryName }.");
 
             RepositoryRelease latestKnownRelease = null;
             var query = QueryBuilder<RepositoryRelease>.CreateQueryForPartitionKey(repoConfiguration.RepositoryName);

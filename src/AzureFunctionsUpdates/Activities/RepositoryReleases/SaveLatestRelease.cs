@@ -16,7 +16,9 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             [Table(Configuration.Releases.TableName)]IAsyncCollector<RepositoryRelease> collector,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(SaveLatestRelease)} for { repoRelease.RepositoryName} { repoRelease.ReleaseName}.");
+            logger.LogInformation($"Started {nameof(SaveLatestRelease)} for " +
+                $"{ repoRelease.RepositoryName} " +
+                $"{ repoRelease.ReleaseName}.");
 
             try
             {

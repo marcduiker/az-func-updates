@@ -3,7 +3,6 @@ using AzureFunctionsUpdates.Activities.Publications;
 using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Models.Publications;
-using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
@@ -83,7 +82,6 @@ namespace AzureFunctionsUpdates.Orchestrations
                         }
                     }
                 }
-
                 
                 logger.LogInformation($"Completed {nameof(PublicationUpdateOrchestration)}.");
             }
