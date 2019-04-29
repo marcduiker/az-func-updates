@@ -13,8 +13,8 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
             string repositoryName,
             string hashTags)
         {
-            PartitionKey = Configuration.RepositoryConfigurations.PartitionKey;
-            RowKey = $"{repositoryOwner}|{repositoryName}";
+            PartitionKey = KeyFormatter.SanitizeKey(Configuration.RepositoryConfigurations.PartitionKey);
+            RowKey = KeyFormatter.SanitizeKey($"{repositoryOwner}|{repositoryName}");
 
             RepositoryOwner = repositoryOwner;
             RepositoryName = repositoryName;
