@@ -13,8 +13,8 @@ namespace AzureFunctionsUpdates.Models.Publications
             string publicationUrl,
             string hashTags)
         {
-            PartitionKey = Configuration.PublicationConfigurations.PartitionKey;
-            RowKey = $"{publicationSourceOwner}|{publicationSourceName}";
+            PartitionKey = KeyFormatter.SanitizeKey(Configuration.PublicationConfigurations.PartitionKey);
+            RowKey = KeyFormatter.SanitizeKey($"{publicationSourceOwner}|{publicationSourceName}");
 
             PublicationSourceOwner = publicationSourceOwner;
             PublicationSourceName = publicationSourceName;
