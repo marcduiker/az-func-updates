@@ -47,7 +47,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                 release.Id,
                 release.Name,
                 release.TagName,
-                release.CreatedAt,
+                release.PublishedAt ?? release.CreatedAt,
                 release.HtmlUrl,
                 release.Body,
                 repoConfiguration.HashTags);
