@@ -23,11 +23,10 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             RepositoryRelease repoRelease = new NullRelease(repoConfiguration.RepositoryName);
             try
             {
-                var latestRelease = await client.Repository.Release.GetAll(
+                var latestRelease = await client.Repository.Release.GetLatest(
                     repoConfiguration.RepositoryOwner,
-                    repoConfiguration.RepositoryName,
-                    new ApiOptions { PageCount = 1, PageSize = 1 });
-                repoRelease = MapToRepoRelease(repoConfiguration, latestRelease.FirstOrDefault());
+                    repoConfiguration.RepositoryName);
+                repoRelease = MapToRepoRelease(repoConfiguration, latestRelease);
             }
             catch (NotFoundException)
             {
