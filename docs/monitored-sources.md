@@ -26,7 +26,6 @@
 |Azure|azure-functions-vs-build-sdk|
 |Azure|azure-webjobs-sdk|
 |Azure|azure-webjobs-sdk-extensions|
-
 |marcduiker|az-func-updates|
 
 ## RSS Feeds
