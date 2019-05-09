@@ -23,10 +23,19 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             RepositoryRelease repoRelease = new NullRelease(repoConfiguration.RepositoryName);
             try
             {
-                var latestRelease = await client.Repository.Release.GetLatest(
+                var releases = await client.Repository.Release.GetAll(
                     repoConfiguration.RepositoryOwner,
                     repoConfiguration.RepositoryName);
-                repoRelease = MapToRepoRelease(repoConfiguration, latestRelease);
+
+                // A repository might not use releases yet.
+                if (releases.Any())
+                {
+                    var latestRelease = releases.OrderByDescending(r => r.PublishedAt ?? r.CreatedAt).FirstOrDefault();
+                    if (latestRelease != null)
+                    {
+                        repoRelease = MapToRepoRelease(repoConfiguration, latestRelease);
+                    }
+                }
             }
             catch (NotFoundException)
             {
@@ -47,7 +56,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                 release.Id,
                 release.Name,
                 release.TagName,
-                release.CreatedAt,
+                release.PublishedAt ?? release.CreatedAt,
                 release.HtmlUrl,
                 release.Body,
                 repoConfiguration.HashTags);
