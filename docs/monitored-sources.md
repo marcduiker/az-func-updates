@@ -27,6 +27,7 @@
 |Azure|azure-webjobs-sdk|
 |Azure|azure-webjobs-sdk-extensions|
 |marcduiker|az-func-updates|
+|microsoft|vscode-azurefunctions|
 
 ## RSS Feeds
 | Owner | Feed |
