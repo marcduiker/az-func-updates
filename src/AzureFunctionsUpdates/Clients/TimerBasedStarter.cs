@@ -9,7 +9,7 @@ namespace AzureFunctionsUpdates.Clients
     {
         [FunctionName(nameof(TimerBasedStarter))]
         public async Task Run([TimerTrigger("0 0 */1 * * *")]TimerInfo timer,
-            [OrchestrationClient] DurableOrchestrationClient client,
+            [OrchestrationClient] DurableOrchestrationClientBase client,
             ILogger logger)
         {
             await client.StartNewAsync(nameof(ReleaseUpdateOrchestration), null);
