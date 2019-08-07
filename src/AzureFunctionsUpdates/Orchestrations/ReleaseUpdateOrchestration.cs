@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Activities.RepositoryReleases;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
-using AzureFunctionsUpdates.Storage;
 
 namespace AzureFunctionsUpdates.Orchestrations
 {
@@ -75,10 +74,21 @@ namespace AzureFunctionsUpdates.Orchestrations
                         if (isSaveSuccessful && Toggles.DoPostUpdate && latestReleases.IsNewAndShouldBePosted)
                         {
                             var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
-                            await context.CallActivityWithRetryAsync(
+                            try
+                            {
+                                await context.CallActivityWithRetryAsync(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
                                   message);
+                            }
+                            catch (FunctionFailedException ffe)
+                            {
+                                logger.LogError("Error when posting to Twitter", ffe);
+
+                                await context.CallActivityAsync<UpdateMessage>(
+                                    nameof(PostUpdateToDeadLetterQueue),
+                                    message);
+                            }
                         }
                     }
                 }
