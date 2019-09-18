@@ -9,29 +9,50 @@ namespace AzureFunctionsUpdates.Builders
     {
         public static UpdateMessage BuildForRelease(RepositoryRelease release)
         {
+            string moreInfoAndHashTagContent = $"{Environment.NewLine}" +
+                               $"{Environment.NewLine}" +
+                               $"See {release.HtmlUrl} for more information." +
+                               $"{Environment.NewLine}" +
+                               $"{Environment.NewLine}" +
+                               $"{release.HashTags}";
+
+            int effectiveMoreInfoAndHashTagContentLength = moreInfoAndHashTagContent.Length - release.HtmlUrl.Length + TwitterShortenedUrlCharacterCount;
+            int maxReleaseDescriptionLength = MaxTwitterCharacterCount - effectiveMoreInfoAndHashTagContentLength;
+            
             string firstLine;
             if (string.IsNullOrEmpty(release.ReleaseName) || release.ReleaseName == release.TagName)
             {
-                firstLine = $"A new {release.RepositoryName} release, tagged {release.TagName}, " +
-                    $"is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
+                firstLine = GetReleaseDescriptionWithoutReleaseName(release);
             }
             else
             {
-                firstLine = $"A new {release.RepositoryName} release, {release.ReleaseName} (tagged {release.TagName}), " +
-                    $"is available on GitHub since {release.ReleaseCreatedAt.ToString("D")}.";
+                firstLine = GetReleaseDescriptionWithReleaseName(release);
+                if (firstLine.Length > maxReleaseDescriptionLength)
+                {
+                    firstLine = GetReleaseDescriptionWithoutReleaseName(release);
+                }
             }
 
             var topic = $"{nameof(RepositoryRelease)}|{release.RepositoryName}";
-            var content = firstLine +
-               $"{Environment.NewLine}" +
-               $"{Environment.NewLine}" +
-               $"See {release.HtmlUrl} for more information." +
-               $"{Environment.NewLine}" +
-               $"{Environment.NewLine}" +
-               $"{release.HashTags}";
+            var content = firstLine + moreInfoAndHashTagContent;
 
             return new UpdateMessage(topic, content);
+            
+            string GetReleaseDescriptionWithoutReleaseName(RepositoryRelease repositoryRelease)
+            {
+                return $"A new {repositoryRelease.RepositoryName} release, tagged {repositoryRelease.TagName}, " +
+                    $"is available on GitHub since {repositoryRelease.ReleaseCreatedAt:D}.";
+            }
+            
+            string GetReleaseDescriptionWithReleaseName(RepositoryRelease repositoryRelease)
+            {
+                return $"A new {release.RepositoryName} release, {release.ReleaseName} (tagged {release.TagName}), " +
+                       $"is available on GitHub since {release.ReleaseCreatedAt:D}.";
+            }
         }
+
+        public const int TwitterShortenedUrlCharacterCount = 28; // Urls are shortened to 28 characters by Twitter.
+        public const int MaxTwitterCharacterCount = 255; // Urls are shortened to 28 characters by Twitter.
 
         public static UpdateMessage BuildForPublication(Publication publication)
         {

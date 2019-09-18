@@ -34,6 +34,29 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                 .With(r => r.ReleaseCreatedAt, releaseDate)
                 .Create();
         }
+        
+        public static RepositoryRelease BuildOneWithLongRepoAndReleaseName()
+        {
+            return _fixture.Build<RepositoryRelease>()
+                .With(r => r.RepositoryName, "azure-functions-powershell-worker")
+                .With(r => r.ReleaseName, "v0.1.174 Release of PowerShell worker for Azure Functions")
+                .With(r => r.TagName, " v0.1.174-preview")
+                .With( r=> r.HtmlUrl, "https://github.com/Azure/azure-functions-powershell-worker/releases/tag/v0.1.174-preview")
+                .With(r => r.HashTags, "#AzureFunctions #Serverless #PowerShell")
+                .Create();
+        }
+        
+        public static RepositoryRelease BuildOneWithShortRepoAndReleaseNameOnAspecificDate()
+        {
+            return _fixture.Build<RepositoryRelease>()
+                .With(r => r.RepositoryName, "azure-functions-host")
+                .With(r => r.ReleaseName, "Azure Functions Runtime 2.0.12477")
+                .With(r => r.ReleaseCreatedAt, new DateTime(2018, 1, 1))
+                .With(r => r.TagName, "v2.0.12477")
+                .With(r=> r.HtmlUrl, "https://github.com/Azure/azure-functions-host/releases/tag/v2.0.12477")
+                .With(r => r.HashTags, "#AzureFunctions #Serverless")
+                .Create();
+        }
 
         public static RepositoryRelease BuildNullRelease(string repositoryName)
         {
