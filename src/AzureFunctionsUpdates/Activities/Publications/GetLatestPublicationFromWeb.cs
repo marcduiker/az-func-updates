@@ -1,8 +1,8 @@
 ﻿using AzureFunctionsUpdates.Models.Publications;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 using Microsoft.SyndicationFeed;
-using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
 using System.Linq;
 using System.Threading.Tasks;

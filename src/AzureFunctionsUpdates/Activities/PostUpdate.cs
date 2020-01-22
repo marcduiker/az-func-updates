@@ -1,6 +1,8 @@
 ﻿using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 using Tweetinvi;
 using Tweetinvi.Models;
 using UpdateMessage = AzureFunctionsUpdates.Models.UpdateMessage;
@@ -15,7 +17,7 @@ namespace AzureFunctionsUpdates.Activities
         private readonly string accessTokenSecret = Environment.GetEnvironmentVariable("Twitter_Access_Token_Secret");
 
         [FunctionName(nameof(PostUpdate))]
-        public void Run(
+        public Task<bool> Run(
             [ActivityTrigger] UpdateMessage message,
             ILogger logger)
         {
@@ -26,6 +28,8 @@ namespace AzureFunctionsUpdates.Activities
             var tweet = Auth.ExecuteOperationWithCredentials(creds, () => Tweet.PublishTweet(message.Content));
             
             logger.LogInformation($"Finished {nameof(PostUpdate)} with tweet: {tweet.Url}.");
+
+            return Task.FromResult(tweet.IsTweetPublished);
         }
     }
 }

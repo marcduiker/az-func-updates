@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Activities.RepositoryReleases;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AzureFunctionsUpdates.Orchestrations
 {
@@ -16,7 +17,7 @@ namespace AzureFunctionsUpdates.Orchestrations
     {
         [FunctionName(nameof(ReleaseUpdateOrchestration))]
         public async Task Run(
-            [OrchestrationTrigger] DurableOrchestrationContextBase context,
+            [OrchestrationTrigger] IDurableOrchestrationContext context,
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(ReleaseUpdateOrchestration)}.");
@@ -76,7 +77,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                             var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
                             try
                             {
-                                await context.CallActivityWithRetryAsync(
+                                await context.CallActivityWithRetryAsync<bool>(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
                                   message);

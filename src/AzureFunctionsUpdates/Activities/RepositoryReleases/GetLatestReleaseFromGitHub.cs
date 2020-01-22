@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 using Octokit;
 

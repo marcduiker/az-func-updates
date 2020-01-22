@@ -2,7 +2,7 @@
 using AzureFunctionsUpdates.Activities.Publications;
 using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Models.Publications;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,9 +11,9 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 {
     public static class PublicationUpdateOrchestrationContextBuilder
     {
-        public static Mock<DurableOrchestrationContextBase> BuildWithoutHistoryAndWithNewWebPublication()
+        public static Mock<IDurableOrchestrationContext> BuildWithoutHistoryAndWithNewWebPublication()
         {
-            var mockContext = new Mock<DurableOrchestrationContextBase>(MockBehavior.Strict);
+            var mockContext = new Mock<IDurableOrchestrationContext>(MockBehavior.Strict);
             const string publicationSourceName = "Azure Service updates";
 
             mockContext
@@ -45,11 +45,11 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                 .ReturnsAsync(true);
 
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync(
+                .Setup(c => c.CallActivityWithRetryAsync<bool>(
                     nameof(PostUpdate),
                     It.IsAny<RetryOptions>(),
                     It.IsAny<UpdateMessage>()))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(true);
 
             return mockContext;
         }

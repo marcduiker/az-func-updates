@@ -7,19 +7,20 @@ using System;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Activities.RepositoryReleases;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 {
     public static class ReleaseUpdateOrchestrationContextBuilder
     {
-        public static Mock<DurableOrchestrationContextBase> BuildWithoutHistoryAndWithGitHubRelease()
+        public static Mock<IDurableOrchestrationContext> BuildWithoutHistoryAndWithGitHubRelease()
         {
             // Enable the orchestration to post updates.
             Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
 
             const string repository1Name = "repo-1";
             const string repository2Name = "repo-2";
-            var mockContext = new Mock<DurableOrchestrationContextBase>(MockBehavior.Strict);
+            var mockContext = new Mock<IDurableOrchestrationContext>(MockBehavior.Strict);
             var repoConfigurations = RepositoryConfigurationBuilder.BuildTwo(repository1Name, repository2Name);
 
             // Setup GetRepositoryConfigurations
@@ -77,30 +78,30 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup PostUpdate
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync(
+                .Setup(c => c.CallActivityWithRetryAsync<bool>(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
                         It.Is<UpdateMessage>(message => message.Topic.Contains(repository1Name))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(true);
 
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync(
+                .Setup(c => c.CallActivityWithRetryAsync<bool>(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
                         It.Is<UpdateMessage>(message => message.Topic.Contains(repository2Name))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(true);
 
             return mockContext;
         }
 
-        public static Mock<DurableOrchestrationContextBase> BuildWithoutHistoryAndGitHubReturnsNullRelease()
+        public static Mock<IDurableOrchestrationContext> BuildWithoutHistoryAndGitHubReturnsNullRelease()
         {
             // Enable the orchestration to post updates.
             Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
 
             const string repository1Name = "repo-1";
             const string repository2Name = "repo-2";
-            var mockContext = new Mock<DurableOrchestrationContextBase>(MockBehavior.Strict);
+            var mockContext = new Mock<IDurableOrchestrationContext>(MockBehavior.Strict);
             var repoConfigurations = RepositoryConfigurationBuilder.BuildTwo(repository1Name, repository2Name);
 
             // Setup GetRepositoryConfigurations
@@ -153,16 +154,16 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup PostUpdate
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync(
+                .Setup(c => c.CallActivityWithRetryAsync<bool>(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
                         It.Is<UpdateMessage>(message => message.Topic.Contains(repository1Name))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(true);
 
             return mockContext;
         }
 
-        public static Mock<DurableOrchestrationContextBase> BuildWithHistoryAndWithGitHubWithEqualReleases()
+        public static Mock<IDurableOrchestrationContext> BuildWithHistoryAndWithGitHubWithEqualReleases()
         {
             // Enable the orchestration to post updates.
             Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
@@ -171,7 +172,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             const string repository2Name = "repo-2";
             const int releaseIdRepo1 = 2;
             const int releaseIdRepo2 = 5;
-            var mockContext = new Mock<DurableOrchestrationContextBase>(MockBehavior.Strict);
+            var mockContext = new Mock<IDurableOrchestrationContext>(MockBehavior.Strict);
             var repoConfigurations = RepositoryConfigurationBuilder.BuildTwo(repository1Name, repository2Name);
 
             // Setup GetRepositoryConfigurations
@@ -215,7 +216,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             return mockContext;
         }
 
-        public static Mock<DurableOrchestrationContextBase> BuildWithHistoryAndWithGitHubWithOneEqualAndOneDifferentRelease()
+        public static Mock<IDurableOrchestrationContext> BuildWithHistoryAndWithGitHubWithOneEqualAndOneDifferentRelease()
         {
             // Enable the orchestration to post updates.
             Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
@@ -226,7 +227,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             const int releaseIdHistoryRepo2 = 5;
             const int releaseIdGithubRepo1 = releaseIdHistoryRepo1;
             const int releaseIdGithubRepo2 = 4; // note that this is lower than previous Id but we're only checking on equality
-            var mockContext = new Mock<DurableOrchestrationContextBase>(MockBehavior.Strict);
+            var mockContext = new Mock<IDurableOrchestrationContext>(MockBehavior.Strict);
             var repoConfigurations = RepositoryConfigurationBuilder.BuildTwo(repository1Name, repository2Name);
 
             // Setup GetRepositoryConfigurations
@@ -277,16 +278,16 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup PostUpdate
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync(
+                .Setup(c => c.CallActivityWithRetryAsync<bool>(
                         nameof(PostUpdate),
                         It.IsAny<RetryOptions>(),
                         It.Is<UpdateMessage>(message => message.Topic.Contains(repository2Name))))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(true);
 
             return mockContext;
         }
         
-         public static Mock<DurableOrchestrationContextBase> BuildWithHistoryAndWithGitHubWithDifferentReleasesButFailsOnSaveLatestRelease()
+         public static Mock<IDurableOrchestrationContext> BuildWithHistoryAndWithGitHubWithDifferentReleasesButFailsOnSaveLatestRelease()
         {
             // Enable the orchestration to post updates.
             Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
@@ -294,7 +295,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             const string repository1Name = "repo-1";
             const int releaseIdHistoryRepo1 = 2;
             const int releaseIdGithubRepo1 = 3;
-            var mockContext = new Mock<DurableOrchestrationContextBase>(MockBehavior.Strict);
+            var mockContext = new Mock<IDurableOrchestrationContext>(MockBehavior.Strict);
             var repoConfigurations = RepositoryConfigurationBuilder.BuildListWithOne(repository1Name);
 
             // Setup GetRepositoryConfigurations

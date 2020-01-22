@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
 using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 
 namespace AzureFunctionsUpdates.Activities.RepositoryReleases

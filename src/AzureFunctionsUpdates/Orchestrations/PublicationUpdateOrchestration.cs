@@ -4,6 +4,7 @@ using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Models.Publications;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace AzureFunctionsUpdates.Orchestrations
     {
         [FunctionName(nameof(PublicationUpdateOrchestration))]
         public async Task Run(
-            [OrchestrationTrigger] DurableOrchestrationContextBase context,
+            [OrchestrationTrigger] IDurableOrchestrationContext context,
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(PublicationUpdateOrchestration)}.");
@@ -75,7 +76,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                         if (isSaveSuccessful && Toggles.DoPostUpdate && latestPublications.IsNewAndShouldBePosted)
                         {
                             var message = MessageBuilder.BuildForPublication(latestPublications.FromWeb);
-                            await context.CallActivityWithRetryAsync(
+                            await context.CallActivityWithRetryAsync<bool>(
                                   nameof(PostUpdate),
                                   GetDefaultRetryOptions(),
                                   message);

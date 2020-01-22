@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Storage;
 using AzureFunctionsUpdates.Models.Publications;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AzureFunctionsUpdates.Activities.Publications
 {

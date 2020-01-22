@@ -1,5 +1,6 @@
 ﻿using AzureFunctionsUpdates.Orchestrations;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace AzureFunctionsUpdates.Clients
     {
         [FunctionName(nameof(TimerBasedStarter))]
         public async Task Run([TimerTrigger("0 0 */1 * * *")]TimerInfo timer,
-            [OrchestrationClient] DurableOrchestrationClientBase client,
+            [DurableClient] IDurableOrchestrationClient client,
             ILogger logger)
         {
             await client.StartNewAsync(nameof(ReleaseUpdateOrchestration), null);

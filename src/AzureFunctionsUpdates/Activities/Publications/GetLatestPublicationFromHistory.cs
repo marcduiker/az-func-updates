@@ -5,6 +5,7 @@ using AzureFunctionsUpdates.Storage;
 using System.Linq;
 using Microsoft.WindowsAzure.Storage.Table;
 using AzureFunctionsUpdates.Models.Publications;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AzureFunctionsUpdates.Activities.Publications
 {
