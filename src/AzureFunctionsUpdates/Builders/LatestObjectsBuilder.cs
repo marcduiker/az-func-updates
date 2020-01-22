@@ -1,17 +1,18 @@
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AzureFunctionsUpdates.Models.RepositoryReleases;
 
 namespace AzureFunctionsUpdates.Builders
 {
     public static class LatestObjectsBuilder
     {        
-        public static TLatest Build<TConfiguration, TMonitored, TLatest>(
+        public static TLatest Build<TConfiguration, TRelease, TLatest>(
             TConfiguration configuration,
-            IEnumerable<TMonitored> newObjects,
-            IEnumerable<TMonitored> historicalObjects,
-            Func<TConfiguration, TMonitored, bool> matchObject) where TLatest : new()
+            IEnumerable<TRelease> newObjects,
+            IEnumerable<TRelease> historicalObjects,
+            Func<TConfiguration, TRelease, bool> matchObject) 
+            where TLatest : new()
         {
             var latestNew = newObjects.First(obj => matchObject(configuration, obj));
             var latestHistorical = historicalObjects.First(obj => matchObject(configuration, obj));

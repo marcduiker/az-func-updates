@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
@@ -25,12 +23,12 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
         {
             get
             {
-                if (FromGitHub.GetType() == typeof(NullRelease))
+                if (FromGitHub.GetType() == typeof(GitHubNullRelease))
                 {
                     return false;
                 }
 
-                if (FromHistory.GetType() == typeof(NullRelease))
+                if (FromHistory.GetType() == typeof(HistoryNullRelease))
                 {
                     return true;
                 }

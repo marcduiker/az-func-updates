@@ -4,7 +4,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
-    public class RepositoryRelease : TableEntity
+    public abstract class RepositoryRelease : TableEntity
     {
         public RepositoryRelease()
         {}

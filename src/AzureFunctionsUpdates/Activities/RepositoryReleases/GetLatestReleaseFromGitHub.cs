@@ -21,7 +21,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                 $"{ repoConfiguration.RepositoryOwner } " +
                 $"{ repoConfiguration.RepositoryName }.");
 
-            RepositoryRelease repoRelease = new NullRelease(repoConfiguration.RepositoryName);
+            RepositoryRelease repoRelease = new GitHubNullRelease(repoConfiguration.RepositoryName);
             try
             {
                 var releases = await client.Repository.Release.GetAll(
@@ -48,11 +48,11 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             return repoRelease;
         }
 
-        private static RepositoryRelease MapToRepoRelease(
+        private static GitHubRepositoryRelease MapToRepoRelease(
             RepositoryConfiguration repoConfiguration, 
             Release release)
         {
-            return new RepositoryRelease(
+            return new GitHubRepositoryRelease(
                 repoConfiguration.RepositoryName,
                 release.Id,
                 release.Name,

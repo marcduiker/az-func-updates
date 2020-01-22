@@ -30,27 +30,29 @@ namespace AzureFunctionsUpdates.Orchestrations
 
             if (repositoryConfigurations.Any())
             {
-                var getLatestReleaseFromGitHubTasks = new List<Task<RepositoryRelease>>();
-                var getLatestReleasesFromHistoryTasks = new List<Task<RepositoryRelease>>();
+                var getLatestReleasesTasks = new List<Task<RepositoryRelease>>();
 
                 // Fan out over the repos
                 foreach (var repositoryConfiguration in repositoryConfigurations)
                 {
                     // Get most recent release from GitHub
-                    getLatestReleaseFromGitHubTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
+                    getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHub),
                         GetDefaultRetryOptions(),
                         repositoryConfiguration));
 
                     // Get most recent known releases from history
-                    getLatestReleasesFromHistoryTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
+                    getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
                     nameof(GetLatestReleaseFromHistory),
                     GetDefaultRetryOptions(),
                     repositoryConfiguration));   
                 }
 
-                var latestFromGitHub = await Task.WhenAll(getLatestReleaseFromGitHubTasks);
-                var latestFromHistory = await Task.WhenAll(getLatestReleasesFromHistoryTasks);
+                var repositoryReleases = await Task.WhenAll(getLatestReleasesTasks);
+
+                var latestFromGitHub = repositoryReleases.OfType<GitHubRepositoryRelease>().Concat<RepositoryRelease>(repositoryReleases.OfType<GitHubNullRelease>());
+                var latestFromHistory = repositoryReleases.OfType<HistoryRepositoryRelease>().Concat<RepositoryRelease>(repositoryReleases.OfType<HistoryNullRelease>());
+
                 var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
                 
                 foreach (var repositoryConfiguration in repositoryConfigurations)

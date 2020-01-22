@@ -1,4 +1,5 @@
 using AzureFunctionsUpdates.Builders;
+using AzureFunctionsUpdates.Models.RepositoryReleases;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
 using FluentAssertions;
 using Xunit;
@@ -11,7 +12,7 @@ namespace AzureFunctionsUpdates.UnitTests.Builders
         public void GivenMessageContentIsTooLong_WhenUpdateMessageIsCreated_ThenTheMessageIsShortened()
         {
             // Arrange
-            var release = RepositoryReleaseBuilder.BuildOneWithLongRepoAndReleaseName();
+            var release = RepositoryReleaseBuilder.BuildOneWithLongRepoAndReleaseName<GitHubRepositoryRelease>();
 
             // Act
             var message = MessageBuilder.BuildForRelease(release);
@@ -26,7 +27,7 @@ namespace AzureFunctionsUpdates.UnitTests.Builders
         public void GivenMessageContentIsNotTooLong_WhenUpdateMessageIsCreated_ThenTheMessageIsNotShortened()
         {
             // Arrange
-            var release = RepositoryReleaseBuilder.BuildOneWithShortRepoAndReleaseNameOnAspecificDate();
+            var release = RepositoryReleaseBuilder.BuildOneWithShortRepoAndReleaseNameOnAspecificDate<GitHubRepositoryRelease>();
 
             // Act
             var message = MessageBuilder.BuildForRelease(release);
@@ -41,7 +42,7 @@ namespace AzureFunctionsUpdates.UnitTests.Builders
         public void GivenARepositoryRelease_WhenUpdateMessageIsCreated_ThenTheMessageContainsTheCorrespondingReleaseInfo()
         {
             // Arrange
-            var release = RepositoryReleaseBuilder.BuildOneWithShortRepoAndReleaseNameOnAspecificDate();
+            var release = RepositoryReleaseBuilder.BuildOneWithShortRepoAndReleaseNameOnAspecificDate<GitHubRepositoryRelease>();
 
             // Act
             var message = MessageBuilder.BuildForRelease(release);

@@ -23,7 +23,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                 $"{ repoConfiguration.RepositoryName }.");
 
             RepositoryRelease latestKnownRelease = null;
-            var query = QueryBuilder<RepositoryRelease>.CreateQueryForPartitionKey(repoConfiguration.RepositoryName);
+            var query = QueryBuilder<HistoryRepositoryRelease>.CreateQueryForPartitionKey(repoConfiguration.RepositoryName);
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
             latestKnownRelease = queryResult.Results.AsReadOnly().OrderByDescending(release => release.CreatedAt).FirstOrDefault();
             
@@ -34,7 +34,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                                       $"ReleaseCreatedAt: {latestKnownRelease.ReleaseCreatedAt:F}.");
             }
             
-            return latestKnownRelease ?? new NullRelease(repoConfiguration.RepositoryName);
+            return latestKnownRelease ?? new HistoryNullRelease(repoConfiguration.RepositoryName);
         }
     }
 }
