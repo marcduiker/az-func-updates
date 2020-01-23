@@ -11,30 +11,16 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
     public class SaveLatestRelease
     {
         [FunctionName(nameof(SaveLatestRelease))]
-        [StorageAccount(Configuration.ConnectionName)]
-        public async Task<bool> Run(
+        [return: Table(Configuration.Releases.TableName, Connection = Configuration.ConnectionName)]
+        public RepositoryRelease Run(
             [ActivityTrigger] RepositoryRelease repoRelease,
-            [Table(Configuration.Releases.TableName)]IAsyncCollector<RepositoryRelease> collector,
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(SaveLatestRelease)} for " +
                 $"{ repoRelease.RepositoryName} " +
                 $"{ repoRelease.ReleaseName}.");
-
-            try
-            {
-                await collector.AddAsync(repoRelease);
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Error when trying to save repository release with " +
-                    $"partitionKey: {repoRelease.PartitionKey} and " +
-                    $"rowKey: {repoRelease.RowKey}.", e);
-                
-                return false;
-            }
-
-            return true;  
+            
+            return repoRelease;  
         }
     }
 }

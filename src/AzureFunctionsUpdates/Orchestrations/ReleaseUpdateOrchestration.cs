@@ -20,84 +20,135 @@ namespace AzureFunctionsUpdates.Orchestrations
             [OrchestrationTrigger] IDurableOrchestrationContext context,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(ReleaseUpdateOrchestration)}.");
-            
             // Read repo links from storage table
-            var repositoryConfigurations = await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                functionName: nameof(GetRepositoryConfigurations),
-                retryOptions: GetDefaultRetryOptions(),
-                input: null);
+            var repositoryConfigurations =
+                await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
+                    functionName: nameof(GetRepositoryConfigurations),
+                    retryOptions: GetDefaultRetryOptions(),
+                    input: null);
 
             if (repositoryConfigurations.Any())
             {
-                var getLatestReleasesTasks = new List<Task<RepositoryRelease>>();
+                var repositoryReleasesTasks = GetRepositoryReleasesTasks(context, repositoryConfigurations);
+                var repositoryReleases = await Task.WhenAll(repositoryReleasesTasks);
 
-                // Fan out over the repos
-                foreach (var repositoryConfiguration in repositoryConfigurations)
-                {
-                    // Get most recent release from GitHub
-                    getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
-                        nameof(GetLatestReleaseFromGitHub),
-                        GetDefaultRetryOptions(),
-                        repositoryConfiguration));
-
-                    // Get most recent known releases from history
-                    getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
-                    nameof(GetLatestReleaseFromHistory),
-                    GetDefaultRetryOptions(),
-                    repositoryConfiguration));   
-                }
-
-                var repositoryReleases = await Task.WhenAll(getLatestReleasesTasks);
-
-                var latestFromGitHub = repositoryReleases.OfType<GitHubRepositoryRelease>().Concat<RepositoryRelease>(repositoryReleases.OfType<GitHubNullRelease>());
-                var latestFromHistory = repositoryReleases.OfType<HistoryRepositoryRelease>().Concat<RepositoryRelease>(repositoryReleases.OfType<HistoryNullRelease>());
+                var latestFromGitHub =  GetReleasesOfTypes<GitHubRepositoryRelease, GitHubNullRelease>(repositoryReleases);
+                var latestFromHistory =  GetReleasesOfTypes<HistoryRepositoryRelease, HistoryNullRelease>(repositoryReleases);
 
                 var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
-                
+
                 foreach (var repositoryConfiguration in repositoryConfigurations)
                 {
                     var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
-                        repositoryConfiguration,
-                        latestFromGitHub,
-                        latestFromHistory,
-                        releaseMatchFunction);
-                    logger.LogInformation($"Repository: {repositoryConfiguration.RepositoryName} " +
-                                          $"Tag: {latestReleases.FromGitHub.TagName}," +
-                                          $"IsNewAndShouldBeStored: {latestReleases.IsNewAndShouldBeStored}, " +
-                                          $"IsNewAndShouldBePosted: {latestReleases.IsNewAndShouldBePosted}.");
-                    
-                    if (latestReleases.IsNewAndShouldBeStored)
-                    {
-                        var isSaveSuccessful = await context.CallActivityWithRetryAsync<bool>(
-                            nameof(SaveLatestRelease),
-                            GetDefaultRetryOptions(),
-                            latestReleases.FromGitHub);
+                            repositoryConfiguration,
+                            latestFromGitHub,
+                            latestFromHistory,
+                            releaseMatchFunction);
+                    LogLatestReleases(logger, repositoryConfiguration, latestReleases);
 
-                        if (isSaveSuccessful && Toggles.DoPostUpdate && latestReleases.IsNewAndShouldBePosted)
-                        {
-                            var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
-                            try
-                            {
-                                await context.CallActivityWithRetryAsync<bool>(
-                                  nameof(PostUpdate),
-                                  GetDefaultRetryOptions(),
-                                  message);
-                            }
-                            catch (FunctionFailedException ffe)
-                            {
-                                logger.LogError("Error when posting to Twitter", ffe);
-
-                                await context.CallActivityAsync<UpdateMessage>(
-                                    nameof(PostUpdateToDeadLetterQueue),
-                                    message);
-                            }
-                        }
-                    }
+                    latestReleases.IsSaved = await SaveLatestRelease(context, logger, latestReleases);
+                    await PostLatestRelease(context, logger, latestReleases);
                 }
-
-                logger.LogInformation($"Completed {nameof(ReleaseUpdateOrchestration)}.");
             }
+        }
+
+        private static async Task<bool> SaveLatestRelease(
+            IDurableOrchestrationContext context,
+            ILogger logger,
+            LatestReleases latestReleases)
+        {
+            if (latestReleases.IsNewAndShouldBeStored)
+            {
+                try
+                {
+                    await context.CallActivityWithRetryAsync<RepositoryRelease>(
+                        nameof(SaveLatestRelease),
+                        GetDefaultRetryOptions(),
+                        latestReleases.FromGitHub);
+                }
+                catch (FunctionFailedException ffe)
+                {
+                    logger.LogError("Error when saving repositoryRelease", ffe, latestReleases);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static async Task PostLatestRelease(
+            IDurableOrchestrationContext context,
+            ILogger logger,
+            LatestReleases latestReleases)
+        {
+            if (Toggles.DoPostUpdate && latestReleases.IsSaved && latestReleases.IsNewAndShouldBePosted)
+            {
+                var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
+                try
+                {
+                    await context.CallActivityWithRetryAsync<bool>(
+                        nameof(PostUpdate),
+                        GetDefaultRetryOptions(),
+                        message);
+                }
+                catch (FunctionFailedException ffe)
+                {
+                    logger.LogError("Error when posting to Twitter", ffe);
+
+                    await context.CallActivityAsync<UpdateMessage>(
+                        nameof(PostUpdateToDeadLetterQueue),
+                        message);
+                }
+            }
+        }
+        
+        private static List<Task<RepositoryRelease>> GetRepositoryReleasesTasks(
+            IDurableOrchestrationContext context, 
+            IReadOnlyList<RepositoryConfiguration> repositoryConfigurations)
+        {
+            var getLatestReleasesTasks = new List<Task<RepositoryRelease>>();
+            
+            // Fan out over the repos
+            foreach (var repositoryConfiguration in repositoryConfigurations)
+            {
+                // Get most recent release from GitHub
+                getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
+                    nameof(GetLatestReleaseFromGitHub),
+                    GetDefaultRetryOptions(),
+                    repositoryConfiguration));
+
+                // Get most recent known releases from history
+                getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
+                    nameof(GetLatestReleaseFromHistory),
+                    GetDefaultRetryOptions(),
+                    repositoryConfiguration));
+            }
+
+            return getLatestReleasesTasks;
+        }
+
+        private static IList<RepositoryRelease> GetReleasesOfTypes<TRelease, TNull>(RepositoryRelease[] repositoryReleases)
+            where TRelease : RepositoryRelease
+            where TNull : RepositoryRelease
+        {
+            return repositoryReleases.OfType<TRelease>()
+                .Concat<RepositoryRelease>(repositoryReleases.OfType<TNull>())
+                .ToList();
+        }
+
+        private static void LogLatestReleases(
+            ILogger logger, 
+            RepositoryConfiguration repositoryConfiguration,
+            LatestReleases latestReleases)
+        {
+            logger.LogInformation("Repository={repositoryName} " +
+                                  "Tag={tagName}," +
+                                  "IsNewAndShouldBeStored={isNewAndShouldBeStored}, " +
+                                  "IsNewAndShouldBePosted={isNewAndShouldBePosted}.",
+                repositoryConfiguration.RepositoryName,
+                latestReleases.FromGitHub.TagName,
+                latestReleases.IsNewAndShouldBeStored,
+                latestReleases.IsNewAndShouldBePosted);
         }
 
         private static RetryOptions GetDefaultRetryOptions()

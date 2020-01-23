@@ -42,7 +42,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             {
                 // We're ignoring 404s for Releases since there are repositories without releases.
                 // But we want to keep monitoring them and notify once they do have a releases.
-                logger.LogWarning($"No release information found for repository: {repoConfiguration.RepositoryName}.");
+                logger.LogWarning("No release information found for repository={repositoryName}", repoConfiguration.RepositoryName);
             }
 
             return repoRelease;

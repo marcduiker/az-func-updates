@@ -51,6 +51,8 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
             }
         }
 
+        public bool IsSaved { get; set; }
+
         public const int MaximumNumberOfDaysToPostAboutNewlyFoundRelease = 3;
     }
 }
