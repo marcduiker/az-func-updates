@@ -9,16 +9,16 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureFunctionsUpdates.Activities.RepositoryReleases
 {
-    public class GetLatestReleaseFromHistory
+    public class GetLatestReleaseFromHistoryActivity
     {
-        [FunctionName(nameof(GetLatestReleaseFromHistory))]
+        [FunctionName(nameof(GetLatestReleaseFromHistoryActivity))]
         [StorageAccount(Configuration.ConnectionName)]
         public async Task<RepositoryRelease> Run(
             [ActivityTrigger] RepositoryConfiguration repoConfiguration,
             [Table(Configuration.Releases.TableName)] CloudTable table,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetLatestReleaseFromHistory)} for " +
+            logger.LogInformation($"Started {nameof(GetLatestReleaseFromHistoryActivity)} for " +
                 $"{ repoConfiguration.RepositoryOwner } " +
                 $"{ repoConfiguration.RepositoryName }.");
 

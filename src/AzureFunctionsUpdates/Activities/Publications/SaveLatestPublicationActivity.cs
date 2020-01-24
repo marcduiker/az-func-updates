@@ -8,16 +8,16 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AzureFunctionsUpdates.Activities.Publications
 {
-    public class SaveLatestPublication
+    public class SaveLatestPublicationActivity
     {
-        [FunctionName(nameof(SaveLatestPublication))]
+        [FunctionName(nameof(SaveLatestPublicationActivity))]
         [StorageAccount(Configuration.ConnectionName)]
         public async Task<bool> Run(
             [ActivityTrigger] Publication publication,
             [Table(Configuration.Publications.TableName)]IAsyncCollector<Publication> collector,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(SaveLatestPublication)} for source: { publication.PublicationSourceName} and ID: { publication.Id}.");
+            logger.LogInformation($"Started {nameof(SaveLatestPublicationActivity)} for source: { publication.PublicationSourceName} and ID: { publication.Id}.");
 
             try
             {

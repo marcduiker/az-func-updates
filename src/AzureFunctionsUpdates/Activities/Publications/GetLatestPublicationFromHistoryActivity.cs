@@ -9,16 +9,16 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AzureFunctionsUpdates.Activities.Publications
 {
-    public class GetLatestPublicationFromHistory
+    public class GetLatestPublicationFromHistoryActivity
     {
-        [FunctionName(nameof(GetLatestPublicationFromHistory))]
+        [FunctionName(nameof(GetLatestPublicationFromHistoryActivity))]
         [StorageAccount(Configuration.ConnectionName)]
         public async Task<Publication> Run(
             [ActivityTrigger] PublicationConfiguration publicationConfiguration,
             [Table(Configuration.Publications.TableName)] CloudTable table,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetLatestPublicationFromHistory)} for { publicationConfiguration.PublicationSourceOwner } { publicationConfiguration.PublicationSourceName }.");
+            logger.LogInformation($"Started {nameof(GetLatestPublicationFromHistoryActivity)} for { publicationConfiguration.PublicationSourceOwner } { publicationConfiguration.PublicationSourceName }.");
 
             Publication latestKnownPublication = null;
             var query = QueryBuilder<Publication>.CreateQueryForPartitionKey(publicationConfiguration.PublicationSourceName);

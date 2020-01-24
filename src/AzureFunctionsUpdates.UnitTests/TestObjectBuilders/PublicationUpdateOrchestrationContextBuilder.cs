@@ -18,35 +18,35 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<IReadOnlyList<PublicationConfiguration>>(
-                    nameof(GetPublicationConfigurations),
+                    nameof(GetPublicationConfigurationsActivity),
                     It.IsAny<RetryOptions>(),
                     null))
                 .ReturnsAsync(PublicationConfigurationBuilder.BuildListWithOne(publicationSourceName));
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<Publication>(
-                    nameof(GetLatestPublicationFromHistory),
+                    nameof(GetLatestPublicationFromHistoryActivity),
                     It.IsAny<RetryOptions>(),
                     It.IsAny<PublicationConfiguration>()))
                 .ReturnsAsync(PublicationBuilder.BuildNullPublication(publicationSourceName));
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<Publication>(
-                    nameof(GetLatestPublicationFromWeb),
+                    nameof(GetLatestPublicationFromWebActivity),
                     It.IsAny<RetryOptions>(),
                     It.IsAny<PublicationConfiguration>()))
                 .ReturnsAsync(PublicationBuilder.BuildPublicationFromWeb(publicationSourceName));
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<bool>(
-                    nameof(SaveLatestPublication),
+                    nameof(SaveLatestPublicationActivity),
                     It.IsAny<RetryOptions>(),
                     It.IsAny<Publication>()))
                 .ReturnsAsync(true);
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<bool>(
-                    nameof(PostUpdate),
+                    nameof(PostUpdateActivity),
                     It.IsAny<RetryOptions>(),
                     It.IsAny<UpdateMessage>()))
                 .ReturnsAsync(true);

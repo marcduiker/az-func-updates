@@ -23,8 +23,8 @@ namespace AzureFunctionsUpdates.Orchestrations
             // Read repo links from storage table
             var repositoryConfigurations =
                 await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
-                    functionName: nameof(GetRepositoryConfigurations),
-                    retryOptions: GetDefaultRetryOptions(),
+                    functionName: nameof(GetRepositoryConfigurationsActivity),
+                    retryOptions: RetryOptionsBuilder.BuildDefault(),
                     input: null);
 
             if (repositoryConfigurations.Any())
@@ -62,8 +62,8 @@ namespace AzureFunctionsUpdates.Orchestrations
                 try
                 {
                     await context.CallActivityWithRetryAsync<RepositoryRelease>(
-                        nameof(SaveLatestRelease),
-                        GetDefaultRetryOptions(),
+                        nameof(SaveLatestReleaseActivity),
+                        RetryOptionsBuilder.BuildDefault(),
                         latestReleases.FromGitHub);
                 }
                 catch (FunctionFailedException ffe)
@@ -87,8 +87,8 @@ namespace AzureFunctionsUpdates.Orchestrations
                 try
                 {
                     await context.CallActivityWithRetryAsync<bool>(
-                        nameof(PostUpdate),
-                        GetDefaultRetryOptions(),
+                        nameof(PostUpdateActivity),
+                        RetryOptionsBuilder.BuildDefault(),
                         message);
                 }
                 catch (FunctionFailedException ffe)
@@ -96,7 +96,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                     logger.LogError("Error when posting to Twitter", ffe);
 
                     await context.CallActivityAsync<UpdateMessage>(
-                        nameof(PostUpdateToDeadLetterQueue),
+                        nameof(PostUpdateToDeadLetterQueueActivity),
                         message);
                 }
             }
@@ -113,14 +113,14 @@ namespace AzureFunctionsUpdates.Orchestrations
             {
                 // Get most recent release from GitHub
                 getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
-                    nameof(GetLatestReleaseFromGitHub),
-                    GetDefaultRetryOptions(),
+                    nameof(GetLatestReleaseFromGitHubActivity),
+                    RetryOptionsBuilder.BuildDefault(),
                     repositoryConfiguration));
 
                 // Get most recent known releases from history
                 getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
-                    nameof(GetLatestReleaseFromHistory),
-                    GetDefaultRetryOptions(),
+                    nameof(GetLatestReleaseFromHistoryActivity),
+                    RetryOptionsBuilder.BuildDefault(),
                     repositoryConfiguration));
             }
 
@@ -149,11 +149,6 @@ namespace AzureFunctionsUpdates.Orchestrations
                 latestReleases.FromGitHub.TagName,
                 latestReleases.IsNewAndShouldBeStored,
                 latestReleases.IsNewAndShouldBePosted);
-        }
-
-        private static RetryOptions GetDefaultRetryOptions()
-        {
-            return new RetryOptions(TimeSpan.FromMinutes(1), 3);
         }
     }
 }

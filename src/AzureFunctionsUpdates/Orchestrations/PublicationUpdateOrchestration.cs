@@ -24,7 +24,7 @@ namespace AzureFunctionsUpdates.Orchestrations
 
             // Read repo links from storage table
             var publicationConfigurations = await context.CallActivityWithRetryAsync<IReadOnlyList<PublicationConfiguration>>(
-                functionName: nameof(GetPublicationConfigurations),
+                functionName: nameof(GetPublicationConfigurationsActivity),
                 retryOptions: GetDefaultRetryOptions(),
                 input: null);
 
@@ -38,13 +38,13 @@ namespace AzureFunctionsUpdates.Orchestrations
                 {
                     // Get most recent publications from web/RSS
                     getLatestPublicationsFromWebTasks.Add(context.CallActivityWithRetryAsync<Publication>(
-                        nameof(GetLatestPublicationFromWeb),
+                        nameof(GetLatestPublicationFromWebActivity),
                         GetDefaultRetryOptions(),
                         publicationConfiguration));
 
                     // Get most recent known publications from history
                     getLatestPublicationsFromHistoryTasks.Add(context.CallActivityWithRetryAsync<Publication>(
-                    nameof(GetLatestPublicationFromHistory),
+                    nameof(GetLatestPublicationFromHistoryActivity),
                     GetDefaultRetryOptions(),
                     publicationConfiguration));   
                 }
@@ -69,7 +69,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                     if (latestPublications.IsNewAndShouldBeStored)
                     {   
                         var isSaveSuccessful = await context.CallActivityWithRetryAsync<bool>(
-                            nameof(SaveLatestPublication),
+                            nameof(SaveLatestPublicationActivity),
                             GetDefaultRetryOptions(),
                             latestPublications.FromWeb);
 
@@ -77,7 +77,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                         {
                             var message = MessageBuilder.BuildForPublication(latestPublications.FromWeb);
                             await context.CallActivityWithRetryAsync<bool>(
-                                  nameof(PostUpdate),
+                                  nameof(PostUpdateActivity),
                                   GetDefaultRetryOptions(),
                                   message);
                         }

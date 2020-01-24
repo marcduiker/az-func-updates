@@ -8,16 +8,16 @@ using Octokit;
 
 namespace AzureFunctionsUpdates.Activities.RepositoryReleases
 {
-    public class GetLatestReleaseFromGitHub
+    public class GetLatestReleaseFromGitHubActivity
     {
         private readonly GitHubClient client = new GitHubClient(new ProductHeaderValue("AzureFunctionUpdates2019"));
 
-        [FunctionName(nameof(GetLatestReleaseFromGitHub))]
+        [FunctionName(nameof(GetLatestReleaseFromGitHubActivity))]
         public async Task<RepositoryRelease> Run(
             [ActivityTrigger] RepositoryConfiguration repoConfiguration,
             ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetLatestReleaseFromGitHub)} for " +
+            logger.LogInformation($"Started {nameof(GetLatestReleaseFromGitHubActivity)} for " +
                 $"{ repoConfiguration.RepositoryOwner } " +
                 $"{ repoConfiguration.RepositoryName }.");
 

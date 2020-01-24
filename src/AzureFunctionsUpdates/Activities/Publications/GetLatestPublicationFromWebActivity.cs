@@ -10,14 +10,14 @@ using System.Xml;
 
 namespace AzureFunctionsUpdates.Activities.Publications
 {
-    public class GetLatestPublicationFromWeb
+    public class GetLatestPublicationFromWebActivity
     {
-        [FunctionName(nameof(GetLatestPublicationFromWeb))]
+        [FunctionName(nameof(GetLatestPublicationFromWebActivity))]
         public async Task<Publication> Run(
                 [ActivityTrigger] PublicationConfiguration publicationConfiguration,
                 ILogger logger)
         {
-            logger.LogInformation($"Started {nameof(GetLatestPublicationFromWeb)} for { publicationConfiguration.PublicationSourceOwner } { publicationConfiguration.PublicationSourceName}.");
+            logger.LogInformation($"Started {nameof(GetLatestPublicationFromWebActivity)} for { publicationConfiguration.PublicationSourceOwner } { publicationConfiguration.PublicationSourceName}.");
 
             Publication publication = new NullPublication(publicationConfiguration.PublicationSourceName);
 
