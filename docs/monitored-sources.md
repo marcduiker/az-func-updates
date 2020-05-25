@@ -4,6 +4,7 @@
 
 | Owner | Repository name |
 |-|-|
+|anthonychu|azure-functions-deno-worker|
 |Azure|azure-functions-appinsights-extension|
 |Azure|azure-functions-core-tools|
 |Azure|azure-functions-docker|
