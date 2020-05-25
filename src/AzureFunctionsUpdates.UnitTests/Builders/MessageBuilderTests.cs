@@ -48,7 +48,7 @@ namespace AzureFunctionsUpdates.UnitTests.Builders
             var message = MessageBuilder.BuildForRelease(release);
 
             // Assert
-            message.Content.Should().Be(@"A new azure-functions-host release, Azure Functions Runtime 2.0.12477 (tagged v2.0.12477), is available on GitHub since Monday, January 1, 2018.
+            message.Content.Should().Be(@"A new azure-functions-host release, Azure Functions Runtime 2.0.12477 (tagged v2.0.12477), is available on GitHub since 01 Jan 2018.
 
 See https://github.com/Azure/azure-functions-host/releases/tag/v2.0.12477 for more information.
 

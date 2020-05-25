@@ -41,13 +41,13 @@ namespace AzureFunctionsUpdates.Builders
             string GetReleaseDescriptionWithoutReleaseName(RepositoryRelease repositoryRelease)
             {
                 return $"A new {repositoryRelease.RepositoryName} release, tagged {repositoryRelease.TagName}, " +
-                    $"is available on GitHub since {repositoryRelease.ReleaseCreatedAt:D}.";
+                    $"is available on GitHub since {repositoryRelease.ReleaseCreatedAt:dd MMM yyyy}.";
             }
             
             string GetReleaseDescriptionWithReleaseName(RepositoryRelease repositoryRelease)
             {
                 return $"A new {release.RepositoryName} release, {release.ReleaseName} (tagged {release.TagName}), " +
-                       $"is available on GitHub since {release.ReleaseCreatedAt:D}.";
+                       $"is available on GitHub since {release.ReleaseCreatedAt:dd MMM yyyy}.";
             }
         }
 
