@@ -23,12 +23,12 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
         {
             get
             {
-                if (FromGitHub.GetType() == typeof(GitHubNullRelease))
+                if (string.IsNullOrEmpty(FromGitHub.PartitionKey))
                 {
                     return false;
                 }
 
-                if (FromHistory.GetType() == typeof(HistoryNullRelease))
+                if (string.IsNullOrEmpty(FromHistory.PartitionKey))
                 {
                     return true;
                 }

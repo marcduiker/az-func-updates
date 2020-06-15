@@ -11,10 +11,10 @@ namespace AzureFunctionsUpdates.Activities
 {
     public class PostUpdateActivity
     {
-        private readonly string consumerApiKey = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Key");
-        private readonly string consumerApiSecret = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Secret");
-        private readonly string accessToken = Environment.GetEnvironmentVariable("Twitter_Access_Token");
-        private readonly string accessTokenSecret = Environment.GetEnvironmentVariable("Twitter_Access_Token_Secret");
+        private readonly string _consumerApiKey = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Key");
+        private readonly string _consumerApiSecret = Environment.GetEnvironmentVariable("Twitter_Consumer_Api_Secret");
+        private readonly string _accessToken = Environment.GetEnvironmentVariable("Twitter_Access_Token");
+        private readonly string _accessTokenSecret = Environment.GetEnvironmentVariable("Twitter_Access_Token_Secret");
 
         [FunctionName(nameof(PostUpdateActivity))]
         public Task<bool> Run(
@@ -23,7 +23,7 @@ namespace AzureFunctionsUpdates.Activities
         {
             logger.LogInformation($"Started {nameof(PostUpdateActivity)} for { message.Topic}.");
 
-            var creds = new TwitterCredentials(consumerApiKey, consumerApiSecret, accessToken, accessTokenSecret);
+            var creds = new TwitterCredentials(_consumerApiKey, _consumerApiSecret, _accessToken, _accessTokenSecret);
             
             var tweet = Auth.ExecuteOperationWithCredentials(creds, () => Tweet.PublishTweet(message.Content));
             

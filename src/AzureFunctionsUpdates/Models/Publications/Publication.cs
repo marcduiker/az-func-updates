@@ -1,6 +1,6 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-using System;
+﻿using System;
 using AzureFunctionsUpdates.Storage;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace AzureFunctionsUpdates.Models.Publications
 {

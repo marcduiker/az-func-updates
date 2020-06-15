@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
 using AzureFunctionsUpdates.Storage;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureFunctionsUpdates.Activities.RepositoryReleases
 {
@@ -13,7 +13,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
     {
         [FunctionName(nameof(GetLatestReleaseFromHistoryActivity))]
         [StorageAccount(Configuration.ConnectionName)]
-        public async Task<RepositoryRelease> Run(
+        public async Task<HistoryRepositoryRelease> Run(
             [ActivityTrigger] RepositoryConfiguration repoConfiguration,
             [Table(Configuration.Releases.TableName)] CloudTable table,
             ILogger logger)
@@ -22,7 +22,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                 $"{ repoConfiguration.RepositoryOwner } " +
                 $"{ repoConfiguration.RepositoryName }.");
 
-            RepositoryRelease latestKnownRelease = null;
+            HistoryRepositoryRelease latestKnownRelease = null;
             var query = QueryBuilder<HistoryRepositoryRelease>.CreateQueryForPartitionKey(repoConfiguration.RepositoryName);
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
             latestKnownRelease = queryResult.Results.AsReadOnly().OrderByDescending(release => release.CreatedAt).FirstOrDefault();
@@ -34,7 +34,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                                       $"ReleaseCreatedAt: {latestKnownRelease.ReleaseCreatedAt:F}.");
             }
             
-            return latestKnownRelease ?? new HistoryNullRelease(repoConfiguration.RepositoryName);
+            return latestKnownRelease ?? new HistoryRepositoryRelease(repoConfiguration.RepositoryName);
         }
     }
 }

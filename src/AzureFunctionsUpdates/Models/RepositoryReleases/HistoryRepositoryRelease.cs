@@ -7,6 +7,9 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
         public HistoryRepositoryRelease() : base()
         {}
 
+        public HistoryRepositoryRelease(string repositoryName) : base(repositoryName)
+        {}
+
         public HistoryRepositoryRelease(
             string repositoryName,
             int releaseId,

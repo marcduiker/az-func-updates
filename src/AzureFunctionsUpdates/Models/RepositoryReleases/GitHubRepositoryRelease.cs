@@ -7,6 +7,9 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
         public GitHubRepositoryRelease() : base()
         {}
 
+        public GitHubRepositoryRelease(string repositoryName) : base(repositoryName)
+        {}
+
         public GitHubRepositoryRelease(
             string repositoryName,
             int releaseId,

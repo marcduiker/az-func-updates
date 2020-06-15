@@ -10,10 +10,15 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
 {
     public class GetLatestReleaseFromGitHubActivity
     {
-        private readonly GitHubClient client = new GitHubClient(new ProductHeaderValue("AzureFunctionUpdates2019"));
+        private readonly IGitHubClient _client;
 
+        public GetLatestReleaseFromGitHubActivity(IGitHubClient client)
+        {
+            _client = client;
+        }
+        
         [FunctionName(nameof(GetLatestReleaseFromGitHubActivity))]
-        public async Task<RepositoryRelease> Run(
+        public async Task<GitHubRepositoryRelease> Run(
             [ActivityTrigger] RepositoryConfiguration repoConfiguration,
             ILogger logger)
         {
@@ -21,10 +26,10 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
                 $"{ repoConfiguration.RepositoryOwner } " +
                 $"{ repoConfiguration.RepositoryName }.");
 
-            RepositoryRelease repoRelease = new GitHubNullRelease(repoConfiguration.RepositoryName);
+            var repoRelease = new GitHubRepositoryRelease(repoConfiguration.RepositoryName);
             try
             {
-                var releases = await client.Repository.Release.GetAll(
+                var releases = await _client.Repository.Release.GetAll(
                     repoConfiguration.RepositoryOwner,
                     repoConfiguration.RepositoryName);
 

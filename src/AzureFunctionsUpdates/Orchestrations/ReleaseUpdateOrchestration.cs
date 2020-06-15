@@ -3,7 +3,6 @@ using AzureFunctionsUpdates.Builders;
 using AzureFunctionsUpdates.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,11 +28,9 @@ namespace AzureFunctionsUpdates.Orchestrations
 
             if (repositoryConfigurations.Any())
             {
-                var repositoryReleasesTasks = GetRepositoryReleasesTasks(context, repositoryConfigurations);
-                var repositoryReleases = await Task.WhenAll(repositoryReleasesTasks);
-
-                var latestFromGitHub =  GetReleasesOfTypes<GitHubRepositoryRelease, GitHubNullRelease>(repositoryReleases);
-                var latestFromHistory =  GetReleasesOfTypes<HistoryRepositoryRelease, HistoryNullRelease>(repositoryReleases);
+                var releasesTasks = GetRepositoryReleasesTasks(context, repositoryConfigurations);
+                var githubReleases = await Task.WhenAll(releasesTasks.GithubReleases);
+                var historyReleases = await Task.WhenAll(releasesTasks.HistoryReleases);
 
                 var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
 
@@ -41,8 +38,8 @@ namespace AzureFunctionsUpdates.Orchestrations
                 {
                     var latestReleases = LatestObjectsBuilder.Build<RepositoryConfiguration, RepositoryRelease, LatestReleases>(
                             repositoryConfiguration,
-                            latestFromGitHub,
-                            latestFromHistory,
+                            githubReleases,
+                            historyReleases,
                             releaseMatchFunction);
                     LogLatestReleases(logger, repositoryConfiguration, latestReleases);
 
@@ -102,29 +99,30 @@ namespace AzureFunctionsUpdates.Orchestrations
             }
         }
         
-        private static List<Task<RepositoryRelease>> GetRepositoryReleasesTasks(
+        private static (List<Task<GitHubRepositoryRelease>> GithubReleases, List<Task<HistoryRepositoryRelease>> HistoryReleases) GetRepositoryReleasesTasks(
             IDurableOrchestrationContext context, 
             IReadOnlyList<RepositoryConfiguration> repositoryConfigurations)
         {
-            var getLatestReleasesTasks = new List<Task<RepositoryRelease>>();
-            
+            var gitHubReleasesTasks = new List<Task<GitHubRepositoryRelease>>();
+            var historyReleasesTasks = new List<Task<HistoryRepositoryRelease>>();
+
             // Fan out over the repos
             foreach (var repositoryConfiguration in repositoryConfigurations)
             {
                 // Get most recent release from GitHub
-                getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
+                gitHubReleasesTasks.Add(context.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                     nameof(GetLatestReleaseFromGitHubActivity),
                     RetryOptionsBuilder.BuildDefault(),
                     repositoryConfiguration));
 
                 // Get most recent known releases from history
-                getLatestReleasesTasks.Add(context.CallActivityWithRetryAsync<RepositoryRelease>(
+                historyReleasesTasks.Add(context.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                     nameof(GetLatestReleaseFromHistoryActivity),
                     RetryOptionsBuilder.BuildDefault(),
                     repositoryConfiguration));
             }
 
-            return getLatestReleasesTasks;
+            return (gitHubReleasesTasks, historyReleasesTasks);
         }
 
         private static IList<RepositoryRelease> GetReleasesOfTypes<TRelease, TNull>(RepositoryRelease[] repositoryReleases)

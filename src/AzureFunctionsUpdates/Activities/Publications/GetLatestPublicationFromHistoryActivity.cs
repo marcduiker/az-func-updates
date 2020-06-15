@@ -1,10 +1,10 @@
-﻿using Microsoft.Azure.WebJobs;
+﻿using System.Linq;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Storage;
-using System.Linq;
-using Microsoft.WindowsAzure.Storage.Table;
 using AzureFunctionsUpdates.Models.Publications;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AzureFunctionsUpdates.Activities.Publications

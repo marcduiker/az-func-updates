@@ -1,6 +1,7 @@
 ﻿using System;
 using AzureFunctionsUpdates.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Cosmos.Table;
+using Newtonsoft.Json;
 
 namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
@@ -8,6 +9,11 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
     {
         public RepositoryRelease()
         {}
+
+        public RepositoryRelease(string repositoryName)
+        {
+            RepositoryName = repositoryName;
+        }
 
         public RepositoryRelease(
             string repositoryName,

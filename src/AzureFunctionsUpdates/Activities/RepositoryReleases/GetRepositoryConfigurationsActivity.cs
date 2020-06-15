@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureFunctionsUpdates.Models.RepositoryReleases;
 using AzureFunctionsUpdates.Storage;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureFunctionsUpdates.Activities.RepositoryReleases
 {
