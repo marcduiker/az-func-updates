@@ -10,8 +10,8 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
     {
         [FunctionName(nameof(SaveLatestReleaseActivity))]
         [return: Table(Configuration.Releases.TableName, Connection = Configuration.ConnectionName)]
-        public RepositoryRelease Run(
-            [ActivityTrigger] RepositoryRelease repoRelease,
+        public GitHubRepositoryRelease Run(
+            [ActivityTrigger] GitHubRepositoryRelease repoRelease,
             ILogger logger)
         {
             logger.LogInformation($"Started {nameof(SaveLatestReleaseActivity)} for " +

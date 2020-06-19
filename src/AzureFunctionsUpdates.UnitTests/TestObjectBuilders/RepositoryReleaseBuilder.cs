@@ -64,10 +64,11 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
         }
 
         public static T BuildNullRelease<T>(string repositoryName)
-            where T : NullRelease
+            where T : RepositoryRelease
         {
             var release =_fixture.Build<T>()
                 .With(r => r.RepositoryName, repositoryName)
+                .Without(r => r.PartitionKey)
                 .Create();
 
             return release;
@@ -92,7 +93,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
         }
 
         public static IReadOnlyList<RepositoryRelease> BuildListContainingOneNullRelease<T>(string repositoryName)
-            where T : NullRelease
+            where T : RepositoryRelease
         {
             return new List<RepositoryRelease>
             {

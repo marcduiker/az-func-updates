@@ -1,7 +1,6 @@
 ﻿using System;
 using AzureFunctionsUpdates.Storage;
 using Microsoft.Azure.Cosmos.Table;
-using Newtonsoft.Json;
 
 namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {

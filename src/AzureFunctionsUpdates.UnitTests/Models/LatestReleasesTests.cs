@@ -16,7 +16,7 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             const string repoName = "repo";
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseId<GitHubRepositoryRelease>(repoName, 1);
-            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryNullRelease>(repoName);
+            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryRepositoryRelease>(repoName);
             var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
             
             // Act
@@ -58,8 +58,8 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             // Arrange
             const string repoName = "repo";
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
-            var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<GitHubNullRelease>(repoName);
-            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryNullRelease>(repoName);
+            var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<GitHubRepositoryRelease>(repoName);
+            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryRepositoryRelease>(repoName);
             var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
             
             // Act
@@ -106,7 +106,7 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             var gitHubReleaseDate = DateTimeOffset.UtcNow.Subtract(daysTimespan);
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseIdAndDate<GitHubRepositoryRelease>(repoName, releaseIdGithub, gitHubReleaseDate);
-            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryNullRelease>(repoName);
+            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryRepositoryRelease>(repoName);
             var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
 
             // Act
@@ -127,11 +127,11 @@ namespace AzureFunctionsUpdates.UnitTests.Models
             // Arrange
             const string repoName = "repo";
             const int releaseIdGithub = 1;
-            var daysTimespan = new TimeSpan(5, 0, 0, 0);
+            var daysTimespan = new TimeSpan(8, 0, 0, 0);
             var gitHubReleaseDate = DateTimeOffset.UtcNow.Subtract(daysTimespan);
             var repoConfig = RepositoryConfigurationBuilder.BuildOne(repoName);
             var releasesFromGitHub = RepositoryReleaseBuilder.BuildListContainingOneWithReleaseIdAndDate<GitHubRepositoryRelease>(repoName, releaseIdGithub, gitHubReleaseDate);
-            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryNullRelease>(repoName);
+            var releasesFromHistory = RepositoryReleaseBuilder.BuildListContainingOneNullRelease<HistoryRepositoryRelease>(repoName);
             var releaseMatchFunction = ReleaseFunctionBuilder.BuildForMatchingRepositoryName();
 
             // Act

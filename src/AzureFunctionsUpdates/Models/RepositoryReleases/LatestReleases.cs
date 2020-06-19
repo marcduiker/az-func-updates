@@ -8,16 +8,16 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
         {}
         
         public LatestReleases(
-            RepositoryRelease latestReleaseFromGitHub,
-            RepositoryRelease latestReleaseFromHistory)
+            GitHubRepositoryRelease latestReleaseFromGitHub,
+            HistoryRepositoryRelease latestReleaseFromHistory)
         {
             FromGitHub = latestReleaseFromGitHub;
             FromHistory = latestReleaseFromHistory;
         }
 
-        public RepositoryRelease FromGitHub { get; }
+        public GitHubRepositoryRelease FromGitHub { get; }
 
-        public RepositoryRelease FromHistory { get; }
+        public HistoryRepositoryRelease FromHistory { get; }
 
         public bool IsNewAndShouldBeStored
         {
@@ -53,6 +53,6 @@ namespace AzureFunctionsUpdates.Models.RepositoryReleases
 
         public bool IsSaved { get; set; }
 
-        public const int MaximumNumberOfDaysToPostAboutNewlyFoundRelease = 3;
+        public const int MaximumNumberOfDaysToPostAboutNewlyFoundRelease = 7;
     }
 }

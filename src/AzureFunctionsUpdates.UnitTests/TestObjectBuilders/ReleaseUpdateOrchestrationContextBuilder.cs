@@ -35,7 +35,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetLatestReleaseFromGitHub
             var gitHubRepositoryReleaseRepo1 = RepositoryReleaseBuilder.BuildOne<GitHubRepositoryRelease>(repository1Name);
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
@@ -43,7 +43,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             var gitHubRepositoryReleaseRepo2 = RepositoryReleaseBuilder.BuildOne<GitHubRepositoryRelease>(repository2Name);
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
@@ -51,18 +51,18 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup GetLatestReleaseFromHistory
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                         nameof(GetLatestReleaseFromHistoryActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
-                .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryNullRelease>(repository1Name));
+                .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryRepositoryRelease>(repository1Name));
 
             mockContext
-               .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+               .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                        nameof(GetLatestReleaseFromHistoryActivity),
                        It.IsAny<RetryOptions>(),
                        It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
-               .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryNullRelease>(repository2Name));
+               .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryRepositoryRelease>(repository2Name));
 
             // Setup SaveLatestRelease
             mockContext
@@ -71,6 +71,8 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryRelease>(r => r.RepositoryName.Equals(repository1Name))))
                 .ReturnsAsync(gitHubRepositoryReleaseRepo1);
+
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
@@ -118,7 +120,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
             // Setup GetLatestReleaseFromGitHub
             var gitHubReleaseRepo1 = RepositoryReleaseBuilder.BuildOne<GitHubRepositoryRelease>(repository1Name);
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
@@ -127,26 +129,28 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Returns NullRelease because no release info is retrieved from GitHub
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
-                 .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<GitHubNullRelease>(repository2Name));
+                 .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<GitHubRepositoryRelease>(repository2Name));
 
             // Setup GetLatestReleaseFromHistory
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                         nameof(GetLatestReleaseFromHistoryActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
-                .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryNullRelease>(repository1Name));
+                .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryRepositoryRelease>(repository1Name));
 
             mockContext
-               .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+               .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                        nameof(GetLatestReleaseFromHistoryActivity),
                        It.IsAny<RetryOptions>(),
                        It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
-               .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryNullRelease>(repository2Name));
+               .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryRepositoryRelease>(repository2Name));
+
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
 
             // Setup SaveLatestRelease
             mockContext
@@ -189,14 +193,14 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup GetLatestReleaseFromGitHub
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
                  .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<GitHubRepositoryRelease>(repository1Name, releaseIdRepo1));
 
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
@@ -204,18 +208,20 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup GetLatestReleaseFromHistory
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                         nameof(GetLatestReleaseFromHistoryActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
                 .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository1Name, releaseIdRepo1));
 
             mockContext
-               .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+               .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                        nameof(GetLatestReleaseFromHistoryActivity),
                        It.IsAny<RetryOptions>(),
                        It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
                .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository2Name, releaseIdRepo2));
+
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
 
             return mockContext;
         }
@@ -244,7 +250,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup GetLatestReleaseFromGitHub
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
@@ -254,7 +260,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                     repository2Name,
                     releaseIdGithubRepo2);
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
@@ -262,18 +268,20 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup GetLatestReleaseFromHistory
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                         nameof(GetLatestReleaseFromHistoryActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
                 .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository1Name, releaseIdHistoryRepo1));
 
             mockContext
-               .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+               .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                        nameof(GetLatestReleaseFromHistoryActivity),
                        It.IsAny<RetryOptions>(),
                        It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
                .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository2Name, releaseIdHistoryRepo2));
+
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
 
             // Setup SaveLatestRelease
             mockContext
@@ -315,7 +323,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup GetLatestReleaseFromGitHub
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<GitHubRepositoryRelease>(
                         nameof(GetLatestReleaseFromGitHubActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
@@ -323,13 +331,14 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
 
             // Setup GetLatestReleaseFromHistory
             mockContext
-                .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
+                .Setup(c => c.CallActivityWithRetryAsync<HistoryRepositoryRelease>(
                         nameof(GetLatestReleaseFromHistoryActivity),
                         It.IsAny<RetryOptions>(),
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
                 .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository1Name, releaseIdHistoryRepo1));
 
-           
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
+
             // Setup SaveLatestRelease, throws
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(

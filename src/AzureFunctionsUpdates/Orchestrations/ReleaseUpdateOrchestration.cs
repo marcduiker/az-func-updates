@@ -19,7 +19,6 @@ namespace AzureFunctionsUpdates.Orchestrations
             [OrchestrationTrigger] IDurableOrchestrationContext context,
             ILogger logger)
         {
-            // Read repo links from storage table
             var repositoryConfigurations =
                 await context.CallActivityWithRetryAsync<IReadOnlyList<RepositoryConfiguration>>(
                     functionName: nameof(GetRepositoryConfigurationsActivity),
@@ -41,7 +40,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                             githubReleases,
                             historyReleases,
                             releaseMatchFunction);
-                    LogLatestReleases(logger, repositoryConfiguration, latestReleases);
+                    context.SetCustomStatus(latestReleases);
 
                     latestReleases.IsSaved = await SaveLatestRelease(context, logger, latestReleases);
                     await PostLatestRelease(context, logger, latestReleases);
@@ -132,21 +131,6 @@ namespace AzureFunctionsUpdates.Orchestrations
             return repositoryReleases.OfType<TRelease>()
                 .Concat<RepositoryRelease>(repositoryReleases.OfType<TNull>())
                 .ToList();
-        }
-
-        private static void LogLatestReleases(
-            ILogger logger, 
-            RepositoryConfiguration repositoryConfiguration,
-            LatestReleases latestReleases)
-        {
-            logger.LogInformation("Repository={repositoryName} " +
-                                  "Tag={tagName}," +
-                                  "IsNewAndShouldBeStored={isNewAndShouldBeStored}, " +
-                                  "IsNewAndShouldBePosted={isNewAndShouldBePosted}.",
-                repositoryConfiguration.RepositoryName,
-                latestReleases.FromGitHub.TagName,
-                latestReleases.IsNewAndShouldBeStored,
-                latestReleases.IsNewAndShouldBePosted);
         }
     }
 }
