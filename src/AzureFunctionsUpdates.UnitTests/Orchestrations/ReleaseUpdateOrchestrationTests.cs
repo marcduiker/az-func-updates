@@ -1,10 +1,10 @@
-﻿using AzureFunctionsUpdates.Activities;
-using AzureFunctionsUpdates.Models;
+﻿using AzureFunctionsUpdates.Models;
 using AzureFunctionsUpdates.Orchestrations;
 using AzureFunctionsUpdates.UnitTests.TestObjectBuilders;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace AzureFunctionsUpdates.UnitTests.Orchestrations
@@ -12,69 +12,83 @@ namespace AzureFunctionsUpdates.UnitTests.Orchestrations
     public class ReleaseUpdateOrchestrationTests
     {
         [Fact]
-        public void GivenNoReleasesAreAvailableInHistoryAndNewGithubReleasesAreRetrieved_WhenOrchestrationIsRun_ThenSaveAndPostShouldBeCalled()
+        public async Task GivenNoReleasesAreAvailableInHistoryAndNewGithubReleasesAreRetrieved_WhenOrchestrationIsRunForTwoRepos_ThenSaveAndPostShouldBeCalled()
         {
             // Arrange
-            var mockContext = OrchestrationContextBuilder.BuildWithoutHistoryAndWithGitHubRelease();
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithoutHistoryAndWithGitHubRelease();
             var logger = new Mock<ILogger>();
+            var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 
             // Act
-            ReleaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
+            await releaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
 
             // Assert
-            mockContext.Verify(c => c.CallActivityWithRetryAsync(
-                        nameof(SaveLatestRelease),
-                        It.IsAny<RetryOptions>(),
-                        It.IsAny<RepositoryRelease>()), Times.Exactly(2));
-
-            mockContext.Verify(c => c.CallActivityWithRetryAsync(
-                       nameof(PostUpdate),
-                       It.IsAny<RetryOptions>(),
-                       It.IsAny<RepositoryRelease>()), Times.Exactly(2));
+            mockContext.VerifyAll();
         }
 
         [Fact]
-        public void GivenReleasesAreAvailableInHistoryAndNewGithubReleasesAreTheSame_WhenOrchestrationIsRun_ThenSaveAndPostShouldNotBeCalled()
+        public async Task GivenNoReleasesAreAvailableInHistoryAndNewGithubReleaseReturnsNullRelease_WhenOrchestrationIsRunForTwoRepos_ThenSaveAndPostShouldBeCalledForTheReleaseWhichWasReturnedFromGitHub()
         {
             // Arrange
-            var mockContext = OrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithEqualReleases();
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithoutHistoryAndGitHubReturnsNullRelease();
             var logger = new Mock<ILogger>();
+            var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 
             // Act
-            ReleaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
+            await releaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
 
             // Assert
-            mockContext.Verify(c => c.CallActivityWithRetryAsync(
-                        nameof(SaveLatestRelease),
-                        It.IsAny<RetryOptions>(),
-                        It.IsAny<RepositoryRelease>()), Times.Never);
+            mockContext.VerifyAll();
+        }
 
-            mockContext.Verify(c => c.CallActivityWithRetryAsync(
-                       nameof(PostUpdate),
-                       It.IsAny<RetryOptions>(),
-                       It.IsAny<RepositoryRelease>()), Times.Never);
+
+        [Fact]
+        public async Task GivenReleasesAreAvailableInHistoryAndNewGithubReleasesAreTheSame_WhenOrchestrationIsRun_ThenSaveAndPostShouldNotBeCalled()
+        {
+            // Arrange
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithEqualReleases();
+            var logger = new Mock<ILogger>();
+            var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
+
+            // Act
+            await releaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
+
+            // Assert
+            mockContext.VerifyAll();
         }
 
         [Fact]
-        public void GivenReleasesAreAvailableInHistoryAndOneGithubReleaseIsEuqualAndOneIsDifferent_WhenOrchestrationIsRun_ThenSaveAndPostShouldBeCalledOnce()
+        public async Task GivenReleasesAreAvailableInHistoryAndOneGithubReleaseIsEqualAndOneIsDifferent_WhenOrchestrationIsRun_ThenSaveAndPostShouldBeCalledOnce()
         {
             // Arrange
-            var mockContext = OrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithOneEqualAndOneDifferentRelease();
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithOneEqualAndOneDifferentRelease();
             var logger = new Mock<ILogger>();
+            var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 
             // Act
-            ReleaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
+            await releaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
 
             // Assert
-            mockContext.Verify(c => c.CallActivityWithRetryAsync(
-                        nameof(SaveLatestRelease),
-                        It.IsAny<RetryOptions>(),
-                        It.IsAny<RepositoryRelease>()), Times.Once);
+            mockContext.VerifyAll();
+        }
+        
+        [Fact]
+        public async Task GivenReleasesAreAvailableInHistoryAndOneGithubReleasesDifferent_WhenOrchestrationIsRunAndSaveLatestReleaseFails_ThenPostUpdateShouldNotBeCalled()
+        {
+            // Arrange
+            Environment.SetEnvironmentVariable(Toggles.DoPostUpdateVariableName, "true");
+            var mockContext = ReleaseUpdateOrchestrationContextBuilder.BuildWithHistoryAndWithGitHubWithDifferentReleasesButFailsOnSaveLatestRelease();
+            var logger = new Mock<ILogger>();
+            var releaseUpdateOrchestration = new ReleaseUpdateOrchestration();
 
-            mockContext.Verify(c => c.CallActivityWithRetryAsync(
-                       nameof(PostUpdate),
-                       It.IsAny<RetryOptions>(),
-                       It.IsAny<RepositoryRelease>()), Times.Once);
+            // Act
+            await releaseUpdateOrchestration.Run(mockContext.Object, logger.Object);
+
+            // Assert
+            mockContext.VerifyAll();
         }
     }
 }

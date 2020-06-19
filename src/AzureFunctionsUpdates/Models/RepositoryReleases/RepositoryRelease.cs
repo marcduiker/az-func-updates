@@ -1,12 +1,18 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-using System;
+﻿using System;
+using AzureFunctionsUpdates.Storage;
+using Microsoft.Azure.Cosmos.Table;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
-    public class RepositoryRelease : TableEntity
+    public abstract class RepositoryRelease : TableEntity
     {
         public RepositoryRelease()
         {}
+
+        public RepositoryRelease(string repositoryName)
+        {
+            RepositoryName = repositoryName;
+        }
 
         public RepositoryRelease(
             string repositoryName,
@@ -19,8 +25,8 @@ namespace AzureFunctionsUpdates.Models
             string hashTags
             )
         {
-            PartitionKey = repositoryName;
-            RowKey = releaseId.ToString();
+            PartitionKey = KeyFormatter.SanitizeKey(repositoryName);
+            RowKey = KeyFormatter.SanitizeKey($"{releaseId.ToString()}-{tagName}");
 
             ReleaseId = releaseId;
             RepositoryName = repositoryName;

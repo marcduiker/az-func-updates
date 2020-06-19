@@ -1,10 +1,9 @@
-﻿using AzureFunctionsUpdates.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
-using System;
+﻿using System;
+using AzureFunctionsUpdates.Storage;
 
-namespace AzureFunctionsUpdates.Models
+namespace AzureFunctionsUpdates.Models.RepositoryReleases
 {
-    public class RepositoryConfiguration : TableEntity
+    public class RepositoryConfiguration : BaseConfiguration
     {
         public RepositoryConfiguration()
         {}
@@ -14,8 +13,8 @@ namespace AzureFunctionsUpdates.Models
             string repositoryName,
             string hashTags)
         {
-            PartitionKey = Configuration.RepositoryConfigurations.PartitionKey;
-            RowKey = $"{repositoryOwner}|{repositoryName}";
+            PartitionKey = KeyFormatter.SanitizeKey(Configuration.RepositoryConfigurations.PartitionKey);
+            RowKey = KeyFormatter.SanitizeKey($"{repositoryOwner}|{repositoryName}");
 
             RepositoryOwner = repositoryOwner;
             RepositoryName = repositoryName;
@@ -27,11 +26,5 @@ namespace AzureFunctionsUpdates.Models
         public string RepositoryOwner { get; set; }
 
         public string RepositoryName { get; set; }
-
-        public string HashTags { get; set; }
-
-        public DateTimeOffset CreatedAt { get; set; }
-
-        public bool IsActive { get; set; }
     }
 }
