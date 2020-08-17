@@ -72,7 +72,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                         It.Is<RepositoryRelease>(r => r.RepositoryName.Equals(repository1Name))))
                 .ReturnsAsync(gitHubRepositoryReleaseRepo1);
 
-            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<string>()));
 
             mockContext
                 .Setup(c => c.CallActivityWithRetryAsync<RepositoryRelease>(
@@ -150,7 +150,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                        It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
                .ReturnsAsync(RepositoryReleaseBuilder.BuildNullRelease<HistoryRepositoryRelease>(repository2Name));
 
-            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<string>()));
 
             // Setup SaveLatestRelease
             mockContext
@@ -221,7 +221,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                        It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
                .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository2Name, releaseIdRepo2));
 
-            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<string>()));
 
             return mockContext;
         }
@@ -281,7 +281,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                        It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository2Name))))
                .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository2Name, releaseIdHistoryRepo2));
 
-            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<string>()));
 
             // Setup SaveLatestRelease
             mockContext
@@ -337,7 +337,7 @@ namespace AzureFunctionsUpdates.UnitTests.TestObjectBuilders
                         It.Is<RepositoryConfiguration>(r => r.RepositoryName.Equals(repository1Name))))
                 .ReturnsAsync(RepositoryReleaseBuilder.BuildOneWithReleaseId<HistoryRepositoryRelease>(repository1Name, releaseIdHistoryRepo1));
 
-            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<LatestReleases>()));
+            mockContext.Setup(c => c.SetCustomStatus(It.IsAny<string>()));
 
             // Setup SaveLatestRelease, throws
             mockContext
