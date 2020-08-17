@@ -40,7 +40,7 @@ namespace AzureFunctionsUpdates.Orchestrations
                             githubReleases,
                             historyReleases,
                             releaseMatchFunction);
-                    context.SetCustomStatus(latestReleases);
+                    context.SetCustomStatus(repositoryConfiguration.RepositoryName);
 
                     latestReleases.IsSaved = await SaveLatestRelease(context, logger, latestReleases);
                     await PostLatestRelease(context, logger, latestReleases);
