@@ -39,6 +39,7 @@
 |Azure|functions-action|
 |Azure|functions-container-action|
 |Azure|homebrew-functions|
+|dapr|azure-functions-extension|
 |marcduiker|az-func-updates|
 |microsoft|vscode-azurefunctions|
 
