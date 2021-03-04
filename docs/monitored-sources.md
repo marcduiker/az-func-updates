@@ -10,6 +10,7 @@
 |Azure|azure-functions-docker|
 |Azure|azure-functions-datalake-extension|
 |Azure|azure-functions-dotnet-extensions|
+|Azure|azure-functions-dotnet-worker|
 |Azure|azure-functions-durable-extension|
 |Azure|azure-functions-durable-js|
 |Azure|azure-functions-eventgrid-extension|
