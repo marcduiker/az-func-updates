@@ -13,6 +13,7 @@
 |Azure|azure-functions-dotnet-worker|
 |Azure|azure-functions-durable-extension|
 |Azure|azure-functions-durable-js|
+|Azure|azure-functions-durable-python|
 |Azure|azure-functions-eventgrid-extension|
 |Azure|azure-functions-eventhubs-extension|
 |Azure|azure-functions-extension-bundles|
