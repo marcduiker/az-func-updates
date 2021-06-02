@@ -1,0 +1,42 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "az_func_updates",
+  "steps": [
+    {
+      "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
+      "title": "Client function - Timer",
+      "description": "The function is triggered by a timer that goes off every two hours.",
+      "line": 12
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
+      "title": "Client function - StartNewInstance",
+      "description": "A new instance is created of the `ReleaseUpdateOrchestration`.",
+      "line": 16
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration function",
+      "description": "The `GetRepositoryConfigurationsActivity` is called which retreives a list of GitHub repositories that will be processed.",
+      "line": 26
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Models/RepositoryReleases/RepositoryConfiguration.cs",
+      "title": "RepositoryConfiguration class",
+      "description": "The `RepositoryConfiguration` contains the minimum information to retrieve the release status for GitHub repositories related to Azure.",
+      "line": 24
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
+      "title": "GetRepositoryConfigurationsActivity function",
+      "description": "The `GetRepositoryConfigurationsActivity` function uses a `Table` input binding to query entities from Table storage.",
+      "line": 19
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration function",
+      "description": "If any `RepositoryConfiguration` items are found the orchestration continues.",
+      "line": 28
+    }
+  ]
+}
