@@ -16,7 +16,7 @@
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
-      "title": "ReleaseUpdateOrchestration",
+      "title": "ReleaseUpdateOrchestration - GetRepositoryConfigurationsActivity",
       "description": "The `GetRepositoryConfigurationsActivity` is called which retrieves a list of GitHub repositories that will be processed.",
       "line": 26
     },
@@ -34,70 +34,87 @@
     },
     {
       "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
-      "title": "GetRepositoryConfigurationsActivity - Query",
+      "title": "GetRepositoryConfigurationsActivity - Query Definition",
       "description": "A query is created that will return all the entities in the partition.",
       "line": 26
     },
     {
       "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
+      "title": "GetRepositoryConfigurationsActivity - Query Execution",
       "description": "The query is executed and only the `RepositoryConfigurations` marked as `IsActive` are added to the output.",
       "line": 30
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
-      "title": "ReleaseUpdateOrchestration function",
+      "title": "ReleaseUpdateOrchestration - RepositoryConfiguration",
       "description": "If any `RepositoryConfiguration` items are found the orchestration continues.",
       "line": 28
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - GetRepositoryReleasesTasks",
       "description": "The `GetRepositoryReleasesTasks` method is used to define the tasks to retrieve GitHub release information from both GitHub and our own data store.",
-      "line": 30,
-      "selection": {
-        "start": {
-          "line": 30,
-          "character": 37
-        },
-        "end": {
-          "line": 30,
-          "character": 63
-        }
-      }
+      "line": 30
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Task Lists",
       "description": "Two lists are initialized to contain the tasks that will call the activities to get releases from GitHub and from our History table.",
       "line": 106
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Iterate RepositoryConfigurations",
       "description": "While iterating over the available `RepositoryConfigurations` tasks are created to call `GetLatestReleaseFromGitHubActivity` and `GetLatestReleaseFromHistoryActivity`.",
-      "line": 124,
-      "selection": {
-        "start": {
-          "line": 119,
-          "character": 28
-        },
-        "end": {
-          "line": 119,
-          "character": 63
-        }
-      }
+      "line": 124
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Fan-out/fan-in",
       "description": "The activity calls are fanned-out so they are processed in parallel as much as possible. Once all tasks have been completed the orchestration continues.",
       "line": 32
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Match release information",
       "description": "The release information from GitHub and the History need to be matched up so we're comparing the right repository data.",
       "line": 34
     },
     {
       "file": "src/AzureFunctionsUpdates/Builders/ReleaseFunctionBuilder.cs",
+      "title": "ReleaseFunctionBuilder",
       "description": "Releases are being matched based on the `RepositoryName`.",
       "line": 11
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "description": "While iterating over the `RepositoryConfigurations`, `LatestReleases` objects are created that contains information if a GitHub release is new and needs to be posted to Twitter.",
+      "line": 42
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "description": "The `SaveLatestRelease` method checks if the latest release should be stored and calls the `SaveLatestReleaseActivity` function that stores the release to the history table.",
+      "line": 72
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "description": "The `PostLatestRelease` method checks if a message needs to be posted for the release, creates a new message, and calls the `PostUpdateActivity` function that makes the call to the Twitter API.",
+      "line": 89,
+      "selection": {
+        "start": {
+          "line": 86,
+          "character": 32
+        },
+        "end": {
+          "line": 86,
+          "character": 50
+        }
+      }
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "description": "In case `PostUpdateActivity` keeps failing the `UpdateMessage` is posted to a dead-letter queue where it can be inspected.",
+      "line": 97
     }
   ]
 }

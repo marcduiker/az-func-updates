@@ -24,6 +24,7 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             var configurations = new List<RepositoryConfiguration>();
             var query = QueryBuilder<RepositoryConfiguration>.CreateQueryForPartitionKey(
                 Configuration.RepositoryConfigurations.PartitionKey);
+                
             var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
             var activeConfigurations = queryResult.Results.Where(config => config.IsActive);
             configurations.AddRange(activeConfigurations);
