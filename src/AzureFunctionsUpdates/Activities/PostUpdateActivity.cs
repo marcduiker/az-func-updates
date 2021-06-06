@@ -24,7 +24,6 @@ namespace AzureFunctionsUpdates.Activities
             logger.LogInformation($"Started {nameof(PostUpdateActivity)} for { message.Topic}.");
 
             var creds = new TwitterCredentials(_consumerApiKey, _consumerApiSecret, _accessToken, _accessTokenSecret);
-            
             var tweet = Auth.ExecuteOperationWithCredentials(creds, () => Tweet.PublishTweet(message.Content));
             
             logger.LogInformation($"Finished {nameof(PostUpdateActivity)} with tweet: {tweet.Url}.");

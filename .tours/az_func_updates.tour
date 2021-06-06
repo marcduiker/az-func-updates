@@ -5,7 +5,7 @@
     {
       "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
       "title": "TimerBasedStarter - Timer",
-      "description": "The function is triggered by a timer that goes off every two hours.",
+      "description": "The function is triggered by a timer that goes off every two hours.\r\n\r\n![Image](../img/diagram2-client.png)",
       "line": 12
     },
     {
@@ -88,33 +88,44 @@
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Iterating RepositoryConfigurations",
       "description": "While iterating over the `RepositoryConfigurations`, `LatestReleases` objects are created that contains information if a GitHub release is new and needs to be posted to Twitter.",
       "line": 42
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - SaveLatestRelease",
       "description": "The `SaveLatestRelease` method checks if the latest release should be stored and calls the `SaveLatestReleaseActivity` function that stores the release to the history table.",
       "line": 72
     },
     {
-      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
-      "description": "The `PostLatestRelease` method checks if a message needs to be posted for the release, creates a new message, and calls the `PostUpdateActivity` function that makes the call to the Twitter API.",
-      "line": 89,
-      "selection": {
-        "start": {
-          "line": 86,
-          "character": 32
-        },
-        "end": {
-          "line": 86,
-          "character": 50
-        }
-      }
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/SaveLatestReleaseActivity.cs",
+      "title": "SaveLatestReleaseActivity",
+      "description": "The `SaveLatestReleaseActivity` contains a table output binding to store the `GitHubRepositoryRelease`.",
+      "line": 21
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - PostLatestRelease",
+      "description": "The `PostLatestRelease` method checks if a message needs to be posted for the release, creates a new message, and calls the `PostUpdateActivity` function that makes the call to the Twitter API.",
+      "line": 89
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/PostUpdateActivity.cs",
+      "description": "The `PostupdateActivity` uses the [TweetInvi](https://github.com/linvi/tweetinvi) package to authenticate to the Twitter API and post the `UpdateMessage`.",
+      "line": 31
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - DeadLetter",
       "description": "In case `PostUpdateActivity` keeps failing the `UpdateMessage` is posted to a dead-letter queue where it can be inspected.",
       "line": 97
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/PostUpdateToDeadLetterQueueActivity.cs",
+      "title": "PostUpdateToDeadLetterQueueActivity",
+      "description": "The `PostUpdateToDeadLetterQueueActivity` uses a queue output binding to put the `UpdateMessage` on the deadletter queue.",
+      "line": 14
     }
   ]
 }
