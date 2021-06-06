@@ -41,7 +41,7 @@
     {
       "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
       "title": "GetRepositoryConfigurationsActivity - Query Execution",
-      "description": "The query is executed and only the `RepositoryConfigurations` marked as `IsActive` are added to the output.",
+      "description": "The query is executed and only the `RepositoryConfigurations` marked as `IsActive` are added to the output.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/RepositoryConfigurations.png?raw=true)",
       "line": 30
     },
     {
@@ -81,6 +81,12 @@
       "line": 34
     },
     {
+      "file": "api-tests/GitHub.http",
+      "title": "GitHub REST API",
+      "description": "Call the [GitHub REST API](https://docs.github.com/en/rest) to retrieve the latest releases for the Azure Functions Host repository. (Requires the [VSCode REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client))",
+      "line": 6
+    },
+    {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
       "title": "ReleaseUpdateOrchestration - Fan-out/fan-in",
       "description": "The activity calls are fanned-out so they are processed in parallel as much as possible. Once all tasks have been completed the orchestration continues.",
@@ -95,7 +101,7 @@
     {
       "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetLatestReleaseFromHistoryActivity.cs",
       "title": "GetLatestReleaseFromHistoryActivity - Query",
-      "description": "The `HistoryRepositoryRelease` objects for a partitionkey (repository name) are being queried from the table. Only the most recent release is returned from the function.",
+      "description": "The `HistoryRepositoryRelease` objects for a partitionkey (repository name) are being queried from the table. Only the most recent release is returned from the function.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/RecentReleases.png?raw=true)",
       "line": 28
     },
     {
@@ -137,7 +143,7 @@
     {
       "file": "src/AzureFunctionsUpdates/Activities/PostUpdateActivity.cs",
       "title": "PostUpdateActivity",
-      "description": "The `PostUpdateActivity` uses the [TweetInvi](https://github.com/linvi/tweetinvi) package to authenticate to the Twitter API and post the `UpdateMessage` object.",
+      "description": "The `PostUpdateActivity` uses the [TweetInvi](https://github.com/linvi/tweetinvi) package to authenticate to the Twitter API and post the `UpdateMessage` object.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram8-postupdate.png?raw=true)",
       "line": 31
     },
     {
