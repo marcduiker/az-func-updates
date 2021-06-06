@@ -1,0 +1,131 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "az_func_updates",
+  "steps": [
+    {
+      "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
+      "title": "TimerBasedStarter - Timer",
+      "description": "The function is triggered by a timer that goes off every two hours.\r\n\r\n![Image](../img/diagram2-client.png)",
+      "line": 12
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
+      "title": "TimerBasedStarter - StartNewInstance",
+      "description": "A new instance is created of the `ReleaseUpdateOrchestration`.",
+      "line": 16
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - GetRepositoryConfigurationsActivity",
+      "description": "The `GetRepositoryConfigurationsActivity` is called which retrieves a list of GitHub repositories that will be processed.",
+      "line": 26
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Models/RepositoryReleases/RepositoryConfiguration.cs",
+      "title": "RepositoryConfiguration",
+      "description": "The `RepositoryConfiguration` contains the minimum information to retrieve the release status for GitHub repositories related to Azure.",
+      "line": 24
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
+      "title": "GetRepositoryConfigurationsActivity -Table input",
+      "description": "The `GetRepositoryConfigurationsActivity` function uses a `Table` input binding to query entities from Table storage.",
+      "line": 19
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
+      "title": "GetRepositoryConfigurationsActivity - Query Definition",
+      "description": "A query is created that will return all the entities in the partition.",
+      "line": 26
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
+      "title": "GetRepositoryConfigurationsActivity - Query Execution",
+      "description": "The query is executed and only the `RepositoryConfigurations` marked as `IsActive` are added to the output.",
+      "line": 30
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - RepositoryConfiguration",
+      "description": "If any `RepositoryConfiguration` items are found the orchestration continues.",
+      "line": 28
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - GetRepositoryReleasesTasks",
+      "description": "The `GetRepositoryReleasesTasks` method is used to define the tasks to retrieve GitHub release information from both GitHub and our own data store.",
+      "line": 30
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Task Lists",
+      "description": "Two lists are initialized to contain the tasks that will call the activities to get releases from GitHub and from our History table.",
+      "line": 106
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Iterate RepositoryConfigurations",
+      "description": "While iterating over the available `RepositoryConfigurations` tasks are created to call `GetLatestReleaseFromGitHubActivity` and `GetLatestReleaseFromHistoryActivity`.",
+      "line": 124
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Fan-out/fan-in",
+      "description": "The activity calls are fanned-out so they are processed in parallel as much as possible. Once all tasks have been completed the orchestration continues.",
+      "line": 32
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Match release information",
+      "description": "The release information from GitHub and the History need to be matched up so we're comparing the right repository data.",
+      "line": 34
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Builders/ReleaseFunctionBuilder.cs",
+      "title": "ReleaseFunctionBuilder",
+      "description": "Releases are being matched based on the `RepositoryName`.",
+      "line": 11
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - Iterating RepositoryConfigurations",
+      "description": "While iterating over the `RepositoryConfigurations`, `LatestReleases` objects are created that contains information if a GitHub release is new and needs to be posted to Twitter.",
+      "line": 42
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - SaveLatestRelease",
+      "description": "The `SaveLatestRelease` method checks if the latest release should be stored and calls the `SaveLatestReleaseActivity` function that stores the release to the history table.",
+      "line": 72
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/SaveLatestReleaseActivity.cs",
+      "title": "SaveLatestReleaseActivity",
+      "description": "The `SaveLatestReleaseActivity` contains a table output binding to store the `GitHubRepositoryRelease`.",
+      "line": 21
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - PostLatestRelease",
+      "description": "The `PostLatestRelease` method checks if a message needs to be posted for the release, creates a new message, and calls the `PostUpdateActivity` function that makes the call to the Twitter API.",
+      "line": 89
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/PostUpdateActivity.cs",
+      "description": "The `PostupdateActivity` uses the [TweetInvi](https://github.com/linvi/tweetinvi) package to authenticate to the Twitter API and post the `UpdateMessage`.",
+      "line": 31
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration - DeadLetter",
+      "description": "In case `PostUpdateActivity` keeps failing the `UpdateMessage` is posted to a dead-letter queue where it can be inspected.",
+      "line": 97
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/PostUpdateToDeadLetterQueueActivity.cs",
+      "title": "PostUpdateToDeadLetterQueueActivity",
+      "description": "The `PostUpdateToDeadLetterQueueActivity` uses a queue output binding to put the `UpdateMessage` on the deadletter queue.",
+      "line": 14
+    }
+  ]
+}

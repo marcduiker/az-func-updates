@@ -7,7 +7,8 @@ namespace AzureFunctionsUpdates.Builders
     {
         public static Func<RepositoryConfiguration, RepositoryRelease, bool> BuildForMatchingRepositoryName()
         {
-            return (config, release) => release.RepositoryName.Equals(config.RepositoryName, StringComparison.InvariantCultureIgnoreCase);
+            return (config, release) => release.RepositoryName.Equals(
+                config.RepositoryName, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
