@@ -5,7 +5,7 @@
     {
       "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
       "title": "TimerBasedStarter - Timer",
-      "description": "The function is triggered by a timer that goes off every two hours.\r\n\r\n![Image](../img/diagram2-client.png)",
+      "description": "The function is triggered by a timer that goes off every two hours.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram2-client.png?raw=true)",
       "line": 12
     },
     {
@@ -13,6 +13,12 @@
       "title": "TimerBasedStarter - StartNewInstance",
       "description": "A new instance is created of the `ReleaseUpdateOrchestration`.",
       "line": 16
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
+      "title": "ReleaseUpdateOrchestration",
+      "description": "The `ReleaseUpdateOrchestration` orchestrates the activity functions. The state of this function is persisted. The orchestrator is replayed each time an activity function is scheduled.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram2-orchestrator.png?raw=true)",
+      "line": 19
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
@@ -29,7 +35,7 @@
     {
       "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetRepositoryConfigurationsActivity.cs",
       "title": "GetRepositoryConfigurationsActivity -Table input",
-      "description": "The `GetRepositoryConfigurationsActivity` function uses a `Table` input binding to query entities from Table storage.",
+      "description": "The `GetRepositoryConfigurationsActivity` function uses a `Table` input binding to query entities from Table storage.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram3-getrepositoryconfigurations.png?raw=true)",
       "line": 19
     },
     {
@@ -69,10 +75,27 @@
       "line": 124
     },
     {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetLatestReleaseFromGitHubActivity.cs",
+      "description": "The `GetLatestReleaseFromGitHubActivity` function uses the [Octokit](https://github.com/octokit/octokit.net) package to call the GitHub API.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram4-getlatestreleasefromgithub.png?raw=true)",
+      "line": 22
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetLatestReleaseFromGitHubActivity.cs",
+      "title": "GetLatestReleaseFromGitHubActivity",
+      "description": "Here the Octokit client is used to retrieve all the releases for a given repository.",
+      "line": 34
+    },
+    {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
       "title": "ReleaseUpdateOrchestration - Fan-out/fan-in",
       "description": "The activity calls are fanned-out so they are processed in parallel as much as possible. Once all tasks have been completed the orchestration continues.",
       "line": 32
+    },
+    {
+      "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetLatestReleaseFromHistoryActivity.cs",
+      "title": "GetLatestReleaseFromHistoryActivity",
+      "description": "The `GetLatestReleaseFromHistoryActivity` function uses a `Table` input binding to retrieve  HistoryRepositoryRelease objects that has been saved by this application in earlier runs.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram4-getlatestreleasefromgithub.png?raw=true)",
+      "line": 18
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
