@@ -17,8 +17,8 @@ namespace AzureFunctionsUpdates.Activities.RepositoryReleases
             logger.LogInformation($"Started {nameof(SaveLatestReleaseActivity)} for " +
                 $"{ repoRelease.RepositoryName} " +
                 $"{ repoRelease.ReleaseName}.");
-            
-            return repoRelease;  
+
+            return repoRelease;
         }
     }
 }
