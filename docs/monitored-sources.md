@@ -13,9 +13,12 @@
 |Azure|azure-functions-core-tools|
 |Azure|azure-functions-docker|
 |Azure|azure-functions-datalake-extension|
+|Azure|azure-functions-devops-build|
 |Azure|azure-functions-dotnet-extensions|
+|Azure|azure-functions-dotnet-worker|
 |Azure|azure-functions-durable-extension|
 |Azure|azure-functions-durable-js|
+|Azure|azure-functions-durable-python|
 |Azure|azure-functions-eventgrid-extension|
 |Azure|azure-functions-eventhubs-extension|
 |Azure|azure-functions-extension-bundles|
@@ -27,6 +30,7 @@
 |Azure|azure-functions-language-worker-protobuf|
 |Azure|azure-functions-microsoftgraph-extension|
 |Azure|azure-functions-nodejs-worker|
+|Azure|azure-functions-openapi-extension|
 |Azure|azure-functions-pack|
 |Azure|azure-functions-powershell-worker|
 |Azure|azure-functions-python-library|
@@ -34,6 +38,7 @@
 |Azure|azure-functions-rabbitmq-extension|
 |Azure|azure-functions-servicebus-extension|
 |Azure|azure-functions-signalrservice-extension|
+|Azure|azure-functions-sql-extension|
 |Azure|azure-functions-templates|
 |Azure|azure-functions-tooling-feed|
 |Azure|azure-functions-ux|
