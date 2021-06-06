@@ -1,6 +1,6 @@
-### Get the latest release for a GitHub repository
+### Get the latest releases for a GitHub repository
 @owner = azure
 @repo = azure-functions-host
 
 @baseUrl = https://api.github.com
-GET {{baseUrl}}/repos/{{owner}}/{{repo}}/releases/latest
+GET {{baseUrl}}/repos/{{owner}}/{{repo}}/releases
