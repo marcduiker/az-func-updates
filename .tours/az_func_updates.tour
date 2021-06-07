@@ -60,7 +60,7 @@
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
       "title": "ReleaseUpdateOrchestration - Task Lists",
       "description": "Two lists are initialized to contain the tasks that will call the activities to get releases from GitHub and from our History table.",
-      "line": 106
+      "line": 108
     },
     {
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
@@ -132,7 +132,7 @@
       "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
       "title": "ReleaseUpdateOrchestration - PostLatestRelease",
       "description": "The `PostLatestRelease` method checks if a message needs to be posted for the release, creates a new message, and calls the `PostUpdateActivity` function that makes the call to the Twitter API.",
-      "line": 89
+      "line": 90
     },
     {
       "file": "src/AzureFunctionsUpdates/Activities/PostUpdateActivity.cs",
