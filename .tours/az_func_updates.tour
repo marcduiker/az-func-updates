@@ -87,12 +87,6 @@
       "line": 6
     },
     {
-      "file": "src/AzureFunctionsUpdates/Orchestrations/ReleaseUpdateOrchestration.cs",
-      "title": "ReleaseUpdateOrchestration - Fan-out/fan-in",
-      "description": "The activity calls are fanned-out so they are processed in parallel as much as possible. Once all tasks have been completed the orchestration continues.",
-      "line": 32
-    },
-    {
       "file": "src/AzureFunctionsUpdates/Activities/RepositoryReleases/GetLatestReleaseFromHistoryActivity.cs",
       "title": "GetLatestReleaseFromHistoryActivity",
       "description": "The `GetLatestReleaseFromHistoryActivity` function uses a `Table` input binding to retrieve  HistoryRepositoryRelease objects that has been saved by this application in earlier runs.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram5-getlatestreleasefromhistory.png?raw=true)",

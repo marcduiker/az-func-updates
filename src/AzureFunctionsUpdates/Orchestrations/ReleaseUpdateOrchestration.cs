@@ -77,7 +77,9 @@ namespace AzureFunctionsUpdates.Orchestrations
             ILogger logger,
             LatestReleases latestReleases)
         {
-            if (Toggles.DoPostUpdate && latestReleases.IsSaved && latestReleases.IsNewAndShouldBePosted)
+            if (Toggles.DoPostUpdate && 
+                latestReleases.IsSaved && 
+                latestReleases.IsNewAndShouldBePosted)
             {
                 var message = MessageBuilder.BuildForRelease(latestReleases.FromGitHub);
                 try
