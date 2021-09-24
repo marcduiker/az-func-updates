@@ -3,6 +3,10 @@
   "title": "az_func_updates",
   "steps": [
     {
+      "title": "Overview",
+      "description": "# Overview\r\n\r\nThis CodeTour shows how the Azure Functions Updates Twitterbot is built. Use the navigation at the bottom of this panel to continue the tour.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram1.png?raw=true)"
+    },
+    {
       "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
       "title": "TimerBasedStarter - Timer",
       "description": "The function is triggered by a timer that goes off every two hours.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram2-client.png?raw=true)",
