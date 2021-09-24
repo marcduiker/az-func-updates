@@ -4,7 +4,7 @@
   "steps": [
     {
       "title": "Overview",
-      "description": "# Overview\r\n\r\nThis CodeTour shows how the Azure Functions Updates Twitterbot is built. Use the navigation at the bottom of this panel to continue the tour.\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram1.png?raw=true)"
+      "description": "# Overview\r\n\r\nThis CodeTour shows how the Azure Functions Updates Twitterbot is built. Use the navigation at the bottom of this panel to continue the tour.\r\n\r\n## Technical Components\r\n\r\nThis Function App is built using:\r\n\r\n- .NET Core 3.1\r\n- Durable Functions\r\n- Table Storage\r\n- Octokit\r\n- TweetInvi\r\n\r\n## Workflow\r\n\r\n![](https://github.com/marcduiker/az-func-updates/blob/main/img/diagram1.png?raw=true)"
     },
     {
       "file": "src/AzureFunctionsUpdates/Clients/TimerBasedStarter.cs",
