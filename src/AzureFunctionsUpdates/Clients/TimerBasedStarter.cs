@@ -14,7 +14,6 @@ namespace AzureFunctionsUpdates.Clients
             ILogger logger)
         {
             await client.StartNewAsync(nameof(ReleaseUpdateOrchestration), null);
-            //await client.StartNewAsync(nameof(PublicationUpdateOrchestration), null);
         }
     }
 }
