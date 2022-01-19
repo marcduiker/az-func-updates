@@ -10,6 +10,7 @@
 |Azure|autorest.azure-functions-python|
 |Azure|autorest.azure-functions-typescript|
 |Azure|azure-functions-appinsights-extension|
+|Azure|azure-functions-applicationinsights-extension|
 |Azure|azure-functions-core-tools|
 |Azure|azure-functions-docker|
 |Azure|azure-functions-datalake-extension|
@@ -25,6 +26,7 @@
 |Azure|azure-functions-host|
 |Azure|azure-functions-iothub-extension|
 |Azure|azure-functions-java-library|
+|Azure|azure-functions-java-core-library|
 |Azure|azure-functions-java-worker|
 |Azure|azure-functions-kafka-extension|
 |Azure|azure-functions-language-worker-protobuf|
